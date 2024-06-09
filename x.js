@@ -1,6 +1,4 @@
 import { firefox } from 'playwright'; 
-
-// دالة لفتح الصفحة والانتظار لمدة دقيقة
 function openPage() {
   return new Promise(async (resolve, reject) => {
     
@@ -14,7 +12,6 @@ function openPage() {
   });
 }
 
-// دالة لتنفيذ العملية 100 مرة بشكل متزامن
 async function executeInParallel() {
   const promises = [];
   for (let i = 0; i < 5; i++) {
@@ -23,7 +20,6 @@ async function executeInParallel() {
   await Promise.all(promises);
 }
 
-// دالة لتكرار العملية بشكل لا نهائي
 async function repeatForever() {
   while (true) {
     await executeInParallel();
