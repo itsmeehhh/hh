@@ -8,6 +8,7 @@
   "engines": {
     "node": "^18.0.6"
   },
+  {
   "buildpacks": [
     {
       "url": "https://github.com/mxschmitt/heroku-playwright-buildpack.git"
@@ -15,7 +16,7 @@
     {
       "url": "heroku/nodejs"
     }
-  ],
+  ]},
   "dependencies": {
     "@types/node": "^18.0.6",
     "axios": "^1.6.7",
