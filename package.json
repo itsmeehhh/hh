@@ -1,5 +1,9 @@
 {
   "type": "module",
+  "scripts": {
+  "start": "node index.js",
+  "postinstall": "npm i && npx playwright install"
+  }
   "dependencies": {
     "playwright": "^1.44.1"
   }
