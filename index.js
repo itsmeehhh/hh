@@ -1,4 +1,5 @@
 import { firefox } from 'playwright'; 
+console.log("watching');
 function openPage() {
   return new Promise(async (resolve, reject) => {
     
@@ -23,6 +24,7 @@ async function executeInParallel() {
 async function repeatForever() {
   while (true) {
     await executeInParallel();
+    console.log("watching again');
   }
 }
 
