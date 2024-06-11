@@ -15,7 +15,7 @@
     {
       "url": "heroku/nodejs"
     }
-  ]
+  ],
   "dependencies": {
     "@types/node": "^18.0.6",
     "axios": "^1.6.7",
