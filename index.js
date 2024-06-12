@@ -1,5 +1,5 @@
 import { firefox } from 'playwright'; 
-let url = "https://youtu.be/qIz9GgkWyts";
+let url = "https://moroccoai-servers.koyeb.app/viewlogs/file";
 console.log(`watching : ${url}`);
 function openPage() {
   return new Promise(async (resolve, reject) => {
