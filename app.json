@@ -30,9 +30,6 @@
     },
     {
       "url": "heroku/nodejs"
-    },
-    {
-      "url": "heroku-community/apt"
     }
   ],
   "repository": "https://github.com/hh/hh",
