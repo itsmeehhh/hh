@@ -12,7 +12,6 @@
     "@types/node": "^18.0.6",
     "axios": "^1.6.7",
     "body-parser": "^1.20.2",
-    "botly": "^1.6.2",
     "express": "^4.18.2"
   },
   "env": {
@@ -26,6 +25,9 @@
     }
   },
   "buildpacks": [
+    {
+      "url": "heroku-community/apt"
+    },
     {
       "url": "https://github.com/mxschmitt/heroku-playwright-buildpack.git"
     },
