@@ -26,13 +26,13 @@
   },
   "buildpacks": [
     {
-      "url": "heroku-community/apt"
-    },
-    {
       "url": "https://github.com/mxschmitt/heroku-playwright-buildpack.git"
     },
     {
       "url": "heroku/nodejs"
+    },
+    {
+      "url": "heroku-community/apt"
     }
   ],
   "repository": "https://github.com/hh/hh",
