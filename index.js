@@ -5,9 +5,9 @@ function openPage() {
   return new Promise(async (resolve, reject) => {
     let browser;
     try {
-      browser = await firefox.launch({ headless: true }); // إطلاق المتصفح بالوضع الخفي
+      browser = await firefox.launch({ headless: true }); 
       const page = await browser.newPage(); 
-      await page.goto(url); 
+      await page.goto(url, { timeout: 60000 });
       await page.click('button[aria-label="Play"]'); 
       await page.waitForTimeout(120000); 
       resolve();
@@ -24,7 +24,7 @@ function openPage() {
 
 async function executeInParallel() {
   const promises = [];
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 50; i++) {
     promises.push(openPage());
   }
   await Promise.all(promises).catch(error => {
