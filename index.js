@@ -24,11 +24,11 @@ function openPage() {
 
 async function executeInParallel() {
   const promises = [];
-  for (let i = 0; i < 50; i++) {
+  for (let i = 0; i < 20; i++) {
     promises.push(openPage());
   }
   await Promise.all(promises).catch(error => {
-    console.error('error:', error);
+    console.error('error run the codes :', error);
   });
 }
 
