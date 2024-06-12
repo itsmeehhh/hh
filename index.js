@@ -24,7 +24,7 @@ function openPage() {
 
 async function executeInParallel() {
   const promises = [];
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 20; i++) {
     promises.push(openPage());
   }
   await Promise.all(promises).catch(error => {
