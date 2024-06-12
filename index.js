@@ -1,23 +1,22 @@
-import { firefox } from 'playwright'; // استيراد مكتبة بلاي رايت لمتصفح فايرفوكس
-
-console.log("watching"); // طباعة رسالة في الكونسول
-
+import { firefox } from 'playwright'; 
+let url = "https://youtu.be/qIz9GgkWyts";
+console.log(`watching : ${url}`);
 function openPage() {
   return new Promise(async (resolve, reject) => {
     let browser;
     try {
       browser = await firefox.launch({ headless: true }); // إطلاق المتصفح بالوضع الخفي
-      const page = await browser.newPage(); // فتح صفحة جديدة
-      await page.goto('https://youtu.be/qIz9GgkWyts'); // الانتقال إلى الرابط المحدد
-      await page.click('button[aria-label="Play"]'); // النقر على زر التشغيل
-      await page.waitForTimeout(120000); // الانتظار لمدة دقيقتين
+      const page = await browser.newPage(); 
+      await page.goto(url); 
+      await page.click('button[aria-label="Play"]'); 
+      await page.waitForTimeout(120000); 
       resolve();
     } catch (error) {
-      console.error('حدث خطأ أثناء فتح الصفحة:', error);
+      console.error('error:', error);
       reject(error);
     } finally {
       if (browser) {
-        await browser.close(); // تأكد من إغلاق المتصفح حتى في حالة حدوث خطأ
+        await browser.close(); 
       }
     }
   });
@@ -25,18 +24,18 @@ function openPage() {
 
 async function executeInParallel() {
   const promises = [];
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 100; i++) {
     promises.push(openPage());
   }
   await Promise.all(promises).catch(error => {
-    console.error('حدث خطأ أثناء تنفيذ الوعود بالتوازي:', error);
+    console.error('error:', error);
   });
 }
 
 async function repeatForever() {
   while (true) {
     await executeInParallel();
-    console.log("watching again");
+    console.log(`watching again : ${url}`);
   }
 }
 
