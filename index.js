@@ -1,7 +1,7 @@
 import { firefox } from 'playwright';
 import UserAgent from 'user-agents';
-
-let url = "https://moroccoai-servers.koyeb.app/viewlogs/file";
+let url = "https://fb.com";
+console.log(`watching: ${url}`);
 
 async function openPage() {
   return new Promise(async (resolve, reject) => {
