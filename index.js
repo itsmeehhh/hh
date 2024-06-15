@@ -1,12 +1,7 @@
 import { firefox } from 'playwright';
 import UserAgent from 'user-agents';
-import ytdl from 'ytdl-core';
-
-let url = "https://m.youtube.com/watch?v=u5j85Z7EMuM";
-const videoInfo = await ytdl.getBasicInfo(url);
-const videoDuration = parseInt(videoInfo.videoDetails.lengthSeconds) + 10;
+let url = "https://fb.com";
 console.log(`watching: ${url}`);
-let timewatch = videoDuration;
 
 async function openPage() {
   return new Promise(async (resolve, reject) => {
@@ -18,7 +13,7 @@ async function openPage() {
       await page.goto(url, { timeout: 60000 });
       await page.click('button[aria-label="Play"]');
       console.log('clicked');
-      await page.waitForTimeout(videoDuration);
+      await page.waitForTimeout(120000);
       resolve();
     } catch (error) {
       console.error('error:', error);
@@ -33,7 +28,7 @@ async function openPage() {
 
 async function executeInParallel() {
   const promises = [];
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 10; i++) {
     const userAgent = new UserAgent();
     promises.push(openPage(userAgent.toString()));
   }
