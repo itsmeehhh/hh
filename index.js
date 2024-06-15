@@ -1,4 +1,3 @@
-
 import { spawn } from 'child_process';
 import { firefox } from 'playwright';
 import { fileURLToPath } from 'url';
