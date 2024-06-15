@@ -1,5 +1,5 @@
 import { spawn } from 'child_process';
-import { chromium } from 'playwright';
+import { firefox } from 'playwright';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
@@ -13,11 +13,11 @@ const duration = 60000; // مدة البقاء مفتوحاً بالمللي ث�
 
 // دالة لفتح المتصفح، تُستخدم من قِبَل العملية الفرعية
 async function openBrowser(url, duration) {
-    const browser = await chromium.launch();
+    const browser = await firefox.launch();
     const context = await browser.newContext();
     const page = await context.newPage();
     await page.goto(url);
-
+    console.log('done');
     // الانتظار لمدة معينة ثم إغلاق المتصفح
     await new Promise(resolve => setTimeout(resolve, duration));
     await browser.close();
