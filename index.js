@@ -17,6 +17,7 @@ const cookiesArray = [
   'SOCS=CAISEwgDEgk2MzcwNjAwNTcaAmFyIAEaBgiAvdSyBg; PREF=tz=Africa.Casablanca&f7=4100&f4=4000000; APISID=joVXVDRMJxwg8Uim/ADyFYjXsbAe-RGVwX; SAPISID=f_Q1e3nnBIyW4FVB/APEBCWr203sGgaq2y; __Secure-1PAPISID=f_Q1e3nnBIyW4FVB/APEBCWr203sGgaq2y; __Secure-3PAPISID=f_Q1e3nnBIyW4FVB/APEBCWr203sGgaq2y; SID=g.a000kwhfiyHvdhc-LuBYYAlj-7fgvmqOf7qJcyhBqXRobX9tLY_gJiMiweJcvzAN12prg03uUgACgYKAdgSARUSFQHGX2MiABuI_nShnxLUwTn64Tle_xoVAUF8yKp88J-JqiHa-6hyqxfKKgvf0076; SIDCC=AKEyXzXTQhSsPD1vB-QLizTBOs2fAcDjpAtvV8n3uxdxhQr8Kg6J64-xjgdo86iTAKcngZ_Aog'
 ];
 
+
 async function openPage(cookie) {
   return new Promise(async (resolve, reject) => {
     let browser;
@@ -36,9 +37,8 @@ async function openPage(cookie) {
       });
 
       const page = await context.newPage();
-      await page.waitForLoadState('networkidle');
-      await page.goto(url, { timeout: 60000 });
-    //test
+      await page.goto(url, { waitUntil: 'networkidle', timeout: 60000 });
+
       const maxAttempts = 10;
       let attempt = 0;
       let buttonVisible = false;
@@ -53,7 +53,8 @@ async function openPage(cookie) {
           }
         }
         attempt++;
-        await page.waitForTimeout(3000);}
+        await page.waitForTimeout(3000);
+      }
 
       if (!buttonVisible) {
         console.log('button not found');
@@ -74,8 +75,9 @@ async function openPage(cookie) {
 
 async function executeInParallel() {
   const promises = [];
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < cookiesArray.length; i++) {
     promises.push(openPage(cookiesArray[i]));
+    await new Promise(resolve => setTimeout(resolve, 2000)); // Add a delay between browser launches
   }
   await Promise.all(promises).catch(error => {
     console.error('حدث خطأ أثناء تشغيل الأكواد:', error);
