@@ -23,27 +23,20 @@ async function openPage(cookie) {
     try {
       browser = await firefox.launch({ headless: true });
       const context = await browser.newContext({
+        cookies: cookie.split(';').map(cookie => {
+          const [name, value] = cookie.split('=');
+          return {
+            name: name.trim(),
+            value: value.trim(),
+            domain: '.youtube.com',
+            path: '/'
+          };
+        }),
         userAgent: new UserAgent().toString()
       });
 
-      await context.addCookies(cookie.split(';').map(cookie => {
-        const [name, value] = cookie.split('=');
-        return {
-          name: name.trim(),
-          value: value.trim(),
-          domain: '.youtube.com',
-          path: '/'
-        };
-      }));
-
       const page = await context.newPage();
       await page.goto(url, { waitUntil: 'networkidle', timeout: 60000 });
-
-      // Verify if logged in by checking for a user-specific element
-      const userIcon = await page.$('img[alt="Avatar"]');
-      if (!userIcon) {
-        throw new Error('Not logged in, user icon not found');
-      }
 
       const maxAttempts = 10;
       let attempt = 0;
