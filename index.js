@@ -11,7 +11,10 @@ async function openPage() {
       const context = await browser.newContext();
       const page = await context.newPage();
       await page.goto(url, { timeout: 60000 });
+      const button = 'button[aria-label="Play"]'
+      if (button) {
       await page.click('button[aria-label="Play"]');
+      } else {}
       await page.waitForTimeout(120000);
       resolve();
     } catch (error) {
