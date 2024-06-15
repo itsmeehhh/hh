@@ -1,6 +1,11 @@
-const { spawn } = require('child_process');
-const { firefox } = require('playwright');
-const path = require('path');
+import { spawn } from 'child_process';
+import { chromium } from 'playwright';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+// تحويل URL الملف الحالي إلى مسار ملف
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const url = 'https://www.fb.com';
 const browserCount = 5;
@@ -8,7 +13,7 @@ const duration = 60000; // مدة البقاء مفتوحاً بالمللي ث�
 
 // دالة لفتح المتصفح، تُستخدم من قِبَل العملية الفرعية
 async function openBrowser(url, duration) {
-    const browser = await firefox.launch();
+    const browser = await chromium.launch();
     const context = await browser.newContext();
     const page = await context.newPage();
     await page.goto(url);
