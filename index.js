@@ -36,8 +36,8 @@ async function openPage(cookiesString, userAgentString) {
       }
       
       await page.goto(url, { timeout: 0 });await page.waitForSelector('button[aria-label="Play"]', { state: 'visible' });
+      await page.waitForSelector('button[aria-label="Play"]', { state: 'visible', timeout: 0 });
       await page.click('button[aria-label="Play"]');
-      console.log('clicked');
       await page.waitForTimeout(timewatch);
       resolve();
     } catch (error) {
