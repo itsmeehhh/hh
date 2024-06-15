@@ -35,7 +35,7 @@ async function openPage(cookiesString, userAgentString) {
         await context.addCookies(cookies);
       }
       
-      await page.goto(url, { timeout: 60000 });
+      await page.goto(url, { timeout: 0 });
       await page.waitForSelector('button[aria-label="Play"]', { state: 'attached' });
 console.log('clicked');
 await page.click('button[aria-label="Play"]');
