@@ -1,14 +1,17 @@
 import { firefox } from 'playwright';
 import UserAgent from 'user-agents';
-let url = "https://fb.com";
+
+let url = "https://m.youtube.com/watch?v=u5j85Z7EMuM";
 console.log(`watching: ${url}`);
 
-async function openPage() {
+async function openPage(userAgentString) {
   return new Promise(async (resolve, reject) => {
     let browser;
     try {
       browser = await firefox.launch({ headless: true });
-      const context = await browser.newContext();
+      const context = await browser.newContext({
+        userAgent: userAgentString
+      });
       const page = await context.newPage();
       await page.goto(url, { timeout: 60000 });
       await page.click('button[aria-label="Play"]');
@@ -28,7 +31,7 @@ async function openPage() {
 
 async function executeInParallel() {
   const promises = [];
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 5; i++) {
     const userAgent = new UserAgent();
     promises.push(openPage(userAgent.toString()));
   }
