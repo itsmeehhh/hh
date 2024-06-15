@@ -13,8 +13,11 @@ async function openPage() {
       await page.goto(url, { timeout: 60000 });
       const button = 'button[aria-label="Play"]'
       if (button) {
+        console.log('clicked');
       await page.click('button[aria-label="Play"]');
-      } else {}
+      } else {
+        console.log('no clicked');
+      }
       await page.waitForTimeout(120000);
       resolve();
     } catch (error) {
