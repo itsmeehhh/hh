@@ -1,20 +1,18 @@
-
 import { spawn } from 'child_process';
 import { firefox } from 'playwright';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import UserAgent from 'user-agents';
-import ytdl from 'ytdl-core';
 
-let url = "https://fb.com";
-//const videoInfo = await ytdl.getBasicInfo(url);
-//const videoDuration = parseInt(videoInfo.videoDetails.lengthSeconds) + 10;
 // تحويل URL الملف الحالي إلى مسار ملف
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+const url = 'https://www.fb.com';
 const browserCount = 5;
-const duration = 60000;
+const duration = 60000; // مدة البقاء مفتوحاً بالمللي ثانية (60 ثانية = 60000 مللي ثانية)
+console.log(`watching: ${url}`);
+// دالة لفتح المتصفح، تُستخدم من قِبَل العملية الفرعية
 async function openBrowser(url, duration, userAgent) {
     const browser = await firefox.launch();
     const context = await browser.newContext({
@@ -22,7 +20,6 @@ async function openBrowser(url, duration, userAgent) {
     });
     const page = await context.newPage();
     await page.goto(url);
-    await page.$('button[aria-label="Play')
     console.log('done');
     // الانتظار لمدة معينة ثم إغلاق المتصفح
     await new Promise(resolve => setTimeout(resolve, duration));
