@@ -37,7 +37,7 @@ async function openPage(cookie) {
 
       const page = await context.newPage();
       await page.goto(url, { timeout: 60000 });
-      await page.click('button[aria-label="Play"]');
+      //await page.click('button[aria-label="Play"]');
       await page.waitForTimeout(30000);
       resolve();
     } catch (error) {
