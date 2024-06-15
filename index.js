@@ -4,6 +4,7 @@ import UserAgent from 'user-agents';
 
 let url = "https://m.youtube.com/watch?v=u5j85Z7EMuM";
 console.log(`watching: ${url}`);
+let timewatch = 120000
 
 const cookiesArray = [
   'SOCS=CAISEwgDEgk2MzcwNjAwNTcaAmFyIAEaBgiAvdSyBg; PREF=tz=Africa.Casablanca&f7=4100&f4=4000000; APISID=X_heg210ystbf7Gk/A1l8xHtkeq5nCKCmb; SAPISID=6fWfh_ffhP8GhFBe/ANO53-z5WbRCV4iXB; __Secure-1PAPISID=6fWfh_ffhP8GhFBe/ANO53-z5WbRCV4iXB; __Secure-3PAPISID=6fWfh_ffhP8GhFBe/ANO53-z5WbRCV4iXB; SID=g.a000kwhLhAh-by0XSp1LFMkEF_RA-CcwqWlOFcds0bo_gRft_y9MjvIW-jtcjGM___lvWGFt0AACgYKAYkSARMSFQHGX2MiAMSySNWs2ov-AoNLYO5fPxoVAUF8yKoRkl1Mp2GijHz6UOTRikcr0076; ST-6hujrl=csn=dsnYcuC-gtMIU3K6&itct=CBQQwJ4JGAAiEwi29dWb1t2GAxW6IAYAHZhqDaI%3D; SIDCC=AKEyXzWi5nrS6l6F4Km_pyPOAeLnMvJEK3AY1lDxYkZtMTAlwWTJ_JNzob3jK8e9UuNYf61i',
@@ -35,14 +36,10 @@ async function openPage(cookiesString, userAgentString) {
       }
       
       await page.goto(url, { timeout: 60000 });
-      const button = 'button[aria-label="Play"]';
-      if (await page.$(button)) {
-        console.log('clicked');
-        await page.click(button);
-      } else {
-        console.log('no clicked');
-      }
-      await page.waitForTimeout(120000);
+      await page.waitForSelector('button[aria-label="Play"]', { state: 'attached' });
+console.log('clicked');
+await page.click('button[aria-label="Play"]');
+      await page.waitForTimeout(timewatch);
       resolve();
     } catch (error) {
       console.error('error:', error);
