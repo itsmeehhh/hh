@@ -6,12 +6,9 @@ import UserAgent from 'user-agents';
 import ytdl from 'ytdl-core';
 
 let url = "https://m.youtube.com/watch?v=u5j85Z7EMuM";
-try {
 const videoInfo = await ytdl.getBasicInfo(url);
 const videoDuration = parseInt(videoInfo.videoDetails.lengthSeconds) + 10;
-} catch (e) {
-    console.log('error in link');
-}
+
 console.log(`start watching: ${url}`);
 // تحويل URL الملف الحالي إلى مسار ملف
 const __filename = fileURLToPath(import.meta.url);
