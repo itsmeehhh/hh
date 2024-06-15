@@ -36,6 +36,7 @@ async function openPage(cookie) {
       });
 
       const page = await context.newPage();
+      await page.waitForLoadState('networkidle');
       await page.goto(url, { timeout: 60000 });
      const button = await page.waitForSelector('button[aria-label="Play"]', { timeout: 30000, state: 'visible' });
       if (button) {
