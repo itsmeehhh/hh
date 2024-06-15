@@ -38,13 +38,27 @@ async function openPage(cookie) {
       const page = await context.newPage();
       await page.waitForLoadState('networkidle');
       await page.goto(url, { timeout: 60000 });
-     const button = await page.waitForSelector('button[aria-label="Play"]', { timeout: 30000, state: 'visible' });
-      if (button) {
-        await button.click();
-        console.log('click done');
-      } else {
-        console.log('no click');
+    //test
+      const maxAttempts = 10;
+      let attempt = 0;
+      let buttonVisible = false;
+      while (attempt < maxAttempts && !buttonVisible) {
+        const button = await page.$('button[aria-label="Play"]');
+        if (button) {
+          const isVisible = await button.isVisible();
+          if (isVisible) {
+            await button.click();
+            console.log('click done');
+            buttonVisible = true;
+          }
+        }
+        attempt++;
+        await page.waitForTimeout(3000);}
+
+      if (!buttonVisible) {
+        console.log('button not found');
       }
+
       await page.waitForTimeout(30000);
       resolve();
     } catch (error) {
