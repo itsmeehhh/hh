@@ -17,27 +17,33 @@ const cookiesArray = [
   'SOCS=CAISEwgDEgk2MzcwNjAwNTcaAmFyIAEaBgiAvdSyBg; PREF=tz=Africa.Casablanca&f7=4100&f4=4000000; APISID=joVXVDRMJxwg8Uim/ADyFYjXsbAe-RGVwX; SAPISID=f_Q1e3nnBIyW4FVB/APEBCWr203sGgaq2y; __Secure-1PAPISID=f_Q1e3nnBIyW4FVB/APEBCWr203sGgaq2y; __Secure-3PAPISID=f_Q1e3nnBIyW4FVB/APEBCWr203sGgaq2y; SID=g.a000kwhfiyHvdhc-LuBYYAlj-7fgvmqOf7qJcyhBqXRobX9tLY_gJiMiweJcvzAN12prg03uUgACgYKAdgSARUSFQHGX2MiABuI_nShnxLUwTn64Tle_xoVAUF8yKp88J-JqiHa-6hyqxfKKgvf0076; SIDCC=AKEyXzXTQhSsPD1vB-QLizTBOs2fAcDjpAtvV8n3uxdxhQr8Kg6J64-xjgdo86iTAKcngZ_Aog'
 ];
 
-
 async function openPage(cookie) {
   return new Promise(async (resolve, reject) => {
     let browser;
     try {
       browser = await firefox.launch({ headless: true });
       const context = await browser.newContext({
-        cookies: cookie.split(';').map(cookie => {
-          const [name, value] = cookie.split('=');
-          return {
-            name: name.trim(),
-            value: value.trim(),
-            domain: '.youtube.com',
-            path: '/'
-          };
-        }),
         userAgent: new UserAgent().toString()
       });
 
+      await context.addCookies(cookie.split(';').map(cookie => {
+        const [name, value] = cookie.split('=');
+        return {
+          name: name.trim(),
+          value: value.trim(),
+          domain: '.youtube.com',
+          path: '/'
+        };
+      }));
+
       const page = await context.newPage();
       await page.goto(url, { waitUntil: 'networkidle', timeout: 60000 });
+
+      // Verify if logged in by checking for a user-specific element
+      const userIcon = await page.$('img[alt="Avatar"]');
+      if (!userIcon) {
+        throw new Error('Not logged in, user icon not found');
+      }
 
       const maxAttempts = 10;
       let attempt = 0;
