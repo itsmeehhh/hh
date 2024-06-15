@@ -1,32 +1,28 @@
 import { firefox } from 'playwright';
 import UserAgent from 'user-agents';
 
-let url = "https://m.youtube.com/watch?v=u5j85Z7EMuM";
+let url = "https://fb.com";
 console.log(`watching: ${url}`);
 
 async function openPage(userAgentString) {
-  return new Promise(async (resolve, reject) => {
-    let browser;
-    try {
-      browser = await firefox.launch({ headless: true });
-      const context = await browser.newContext({
-        userAgent: userAgentString
-      });
-      const page = await context.newPage();
-      await page.goto(url, { timeout: 60000 });
-      await page.click('button[aria-label="Play"]');
-      console.log('clicked');
-      await page.waitForTimeout(120000);
-      resolve();
-    } catch (error) {
-      console.error('error:', error);
-      reject(error);
-    } finally {
-      if (browser) {
-        await browser.close();
-      }
+  let browser;
+  try {
+    browser = await firefox.launch({ headless: true });
+    const context = await browser.newContext({
+      userAgent: userAgentString
+    });
+    const page = await context.newPage();
+    await page.goto(url, { timeout: 60000 }).catch(e => console.error('Error during page.goto:', e));
+    await page.click('button[aria-label="Play"]').catch(e => console.error('Error during page.click:', e));
+    console.log('clicked');
+    await page.waitForTimeout(120000);
+  } catch (error) {
+    console.error('error:', error);
+  } finally {
+    if (browser) {
+      await browser.close().catch(e => console.error('Error during browser.close:', e));
     }
-  });
+  }
 }
 
 async function executeInParallel() {
