@@ -1,8 +1,8 @@
 import { spawn } from 'child_process';
-import { firefox } from 'playwright';
+import { firefox } from 'playwright-firefox';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import * as ua from 'user-agents';
+import UserAgent from 'user-agents';
 
 // تحويل URL الملف الحالي إلى مسار ملف
 const __filename = fileURLToPath(import.meta.url);
@@ -42,20 +42,8 @@ if (process.argv[2] === 'child') {
 
         // فتح المتصفحات في عمليات فرعية
         for (let i = 0; i < browserCount; i++) {
-            const userAgent = new ua({ deviceCategory: 'desktop' }).toString();
-            const child = spawn('node', [__filename, 'child', url, duration, userAgent]);
-
-            child.stdout.on('data', (data) => {
-                console.log(`Browser ${i + 1}: ${data}`);
-            });
-
-            child.stderr.on('data', (data) => {
-                console.error(`Browser ${i + 1} error: ${data}`);
-            });
-
-            child.on('close', (code) => {
-                console.log(`Browser ${i + 1} closed with code ${code}`);
-            });
+            const userAgent = new UserAgent({ deviceCategory: 'desktop' }).toString();
+            const child = spawn('node', [__filename, 'child', url, duration, userAgent], { stdio: 'inherit' });
 
             processes.push(child);
         }
