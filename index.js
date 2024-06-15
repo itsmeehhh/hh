@@ -11,9 +11,10 @@ const __dirname = dirname(__filename);
 const url = 'https://m.youtube.com/watch?v=u5j85Z7EMuM';
 const browserCount = 5;
 const duration = 60000; // مدة البقاء مفتوحاً بالمللي ثانية (60 ثانية = 60000 مللي ثانية)
-console.log(`watching: ${url}`);
+console.log(`watchind ${url}`);
 // دالة لفتح المتصفح، تُستخدم من قِبَل العملية الفرعية
 async function openBrowser(url, duration, userAgent) {
+    console.log(`Opening browser with userAgent: ${userAgent}`);
     const browser = await firefox.launch();
     const context = await browser.newContext({
         userAgent: userAgent
@@ -28,7 +29,7 @@ async function openBrowser(url, duration, userAgent) {
 
 // التحقق مما إذا كانت هذه العملية فرعية
 if (process.argv[2] === 'child') {
-    console.log('Child process started');
+    // هذا الجزء من الكود سيتم تنفيذه فقط في العملية الفرعية
     const url = process.argv[3];
     const duration = parseInt(process.argv[4], 10);
     const userAgent = process.argv[5];
@@ -36,8 +37,11 @@ if (process.argv[2] === 'child') {
         console.error(err);
         process.exit(1);
     });
-}
- else {
+} else {
+    // هذا الجزء من الكود هو الرئيسي ويتم تنفيذه مرة واحدة عند بدء البرنامج
+
+    console.log(`watching: ${url}`);
+
     // الوظيفة الرئيسية لفتح المتصفحات في عمليات فرعية
     function openBrowsers() {
         const processes = [];
@@ -59,7 +63,7 @@ if (process.argv[2] === 'child') {
 
             // الانتظار حتى تنتهي جميع العمليات الفرعية
             await Promise.all(processes.map(p => new Promise(resolve => p.on('close', resolve))));
-          console.log('watching again');
+            console.log('watching again');
         }
     })();
 }
