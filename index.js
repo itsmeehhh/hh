@@ -19,7 +19,7 @@ async function openPage(userAgentString) {
       await page.goto(url, { timeout: 0 });
       await page.waitForSelector('button[aria-label="Play"]', { state: 'visible' });
       console.log('clicked');
-      await page.click('button[aria-label="Play"]', {timeout: 0});
+      await page.click('button[aria-label="Play"]');
       await page.waitForTimeout(timewatch);
       resolve();
     } catch (error) {
