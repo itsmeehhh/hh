@@ -17,7 +17,6 @@ async function openPage(userAgentString) {
       const page = await context.newPage();
       
       await page.goto(url, { timeout: 0 });
-      await page.waitForSelector('button[aria-label="Play"]', { state: 'visible' });
       console.log('clicked');
       await page.click('button[aria-label="Play"]');
       await page.waitForTimeout(timewatch);
