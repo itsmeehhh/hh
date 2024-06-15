@@ -1,5 +1,5 @@
 import { spawn } from 'child_process';
-import { firefox } from 'playwright-firefox';
+import { firefox } from 'playwright';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import UserAgent from 'user-agents';
