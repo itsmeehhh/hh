@@ -1,3 +1,4 @@
+
 import { spawn } from 'child_process';
 import { firefox } from 'playwright';
 import { fileURLToPath } from 'url';
@@ -8,7 +9,6 @@ import ytdl from 'ytdl-core';
 let url = "https://m.youtube.com/watch?v=u5j85Z7EMuM";
 const videoInfo = await ytdl.getBasicInfo(url);
 const videoDuration = parseInt(videoInfo.videoDetails.lengthSeconds) + 10;
-
 console.log(`start watching: ${url}`);
 // تحويل URL الملف الحالي إلى مسار ملف
 const __filename = fileURLToPath(import.meta.url);
@@ -29,59 +29,55 @@ const cookiesArray = [
   'SOCS=CAISEwgDEgk2MzcwNjAwNTcaAmFyIAEaBgiAvdSyBg; PREF=tz=Africa.Casablanca&f7=4100&f4=4000000; APISID=joVXVDRMJxwg8Uim/ADyFYjXsbAe-RGVwX; SAPISID=f_Q1e3nnBIyW4FVB/APEBCWr203sGgaq2y; __Secure-1PAPISID=f_Q1e3nnBIyW4FVB/APEBCWr203sGgaq2y; __Secure-3PAPISID=f_Q1e3nnBIyW4FVB/APEBCWr203sGgaq2y; SID=g.a000kwhfiyHvdhc-LuBYYAlj-7fgvmqOf7qJcyhBqXRobX9tLY_gJiMiweJcvzAN12prg03uUgACgYKAdgSARUSFQHGX2MiABuI_nShnxLUwTn64Tle_xoVAUF8yKp88J-JqiHa-6hyqxfKKgvf0076; SIDCC=AKEyXzXTQhSsPD1vB-QLizTBOs2fAcDjpAtvV8n3uxdxhQr8Kg6J64-xjgdo86iTAKcngZ_Aog'
 ];
 
+// تقسيم عدد الكوكيز على عدد المتصفحات
+const cookiesPerBrowser = Math.ceil(cookiesArray.length / browserCount);
 
-// تعيين الكوكيز لكل متصفح
-async function openBrowserWithCookies(url, duration, userAgent, cookies, browserIndex) {
-    const browserName = 'browser' + browserIndex;
-
+// دالة لفتح المتصفح، تُستخدم من قِبَل العملية الفرعية
+async function openBrowser(url, duration, cookies) {
     const browser = await firefox.launch();
     const context = await browser.newContext({
-        userAgent: userAgent
+        cookies: cookies
     });
     const page = await context.newPage();
-
-    // تعيين الكوكيز للصفحة
-    await page.setCookies(cookies);
-
     await page.goto(url);
-    console.log(browserName + ': done');
-
+    console.log('done');
     // الانتظار لمدة معينة ثم إغلاق المتصفح
     await new Promise(resolve => setTimeout(resolve, duration));
     await browser.close();
 }
 
-// فتح المتصفحات مع الكوكيز المعينة
-async function openBrowsersWithCookies() {
-    const processes = [];
+// التحقق مما إذا كانت هذه العملية فرعية
+if (process.argv[2] === 'child') {
+    const url = process.argv[3];
+    const duration = parseInt(process.argv[4], 10);
+    const cookiesIndex = parseInt(process.argv[5], 10);
+    const cookies = cookiesArray.slice(cookiesIndex, cookiesIndex + cookiesPerBrowser);
+    openBrowser(url, duration, cookies).catch(err => {
+        console.error(err);
+        process.exit(1);
+    });
+} else {
+    // الوظيفة الرئيسية لفتح المتصفحات في عمليات فرعية
+    function openBrowsers() {
+        const processes = [];
 
-    for (let i = 0; i < browserCount; i++) {
-        const userAgent = new UserAgent({ deviceCategory: 'desktop' }).toString();
-        const cookies = browsersCookies[i % browsersCookies.length];
-        const browserIndex = i + 1;
+        // فتح المتصفحات في عمليات فرعية
+        for (let i = 0; i < browserCount; i++) {
+            const cookiesIndex = i * cookiesPerBrowser;
+            const child = spawn('node', [__filename, 'child', url, duration, cookiesIndex], { stdio: 'inherit' });
 
-        const child = spawn('node', [__filename, 'child', url, duration, userAgent, JSON.stringify(cookies), browserIndex], { stdio: 'inherit' });
-
-        processes.push(child);
-    }
-
-    return processes;
-}
-
-// التحقق من عدد المتصفحات وفتح المتصفحات الإضافية إذا لزم الأمر
-async function openBrowsers() {
-  const processes = [];
-    while (true) {
-        const currentBrowserCount = (await Promise.all(processes.map(p => new Promise(resolve => p.on('close', resolve))))).length;
-        const additionalBrowserCount = browserCount - currentBrowserCount;
-
-        if (additionalBrowserCount > 0) {
-            const additionalProcesses = await openBrowsersWithCookies(additionalBrowserCount);
-            processes.push(...additionalProcesses);
+            processes.push(child);
         }
-    }
-}
 
-(async () => {
-    await openBrowsers();
-})();
+        return processes;
+    }
+
+    (async () => {
+        while (true) {
+            const processes = openBrowsers();
+
+            // الانتظار حتى تنتهي جميع العمليات الفرعية
+            await Promise.all(processes.map(p => new Promise(resolve => p.on('close', resolve))));
+        }
+    })();
+}
