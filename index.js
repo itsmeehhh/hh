@@ -15,13 +15,13 @@ async function openPage() {
       browser = await firefox.launch({ headless: true });
       const context = await browser.newContext();
       const page = await context.newPage();
-      await page.goto(url, { timeout: 60000 });
+      await page.goto(url, { timeout: 0 });
       await page.click('button[aria-label="Play"]');
       console.log('clicked');
       await page.waitForTimeout(videoDuration);
       resolve();
     } catch (error) {
-      console.error('error:', error);
+      console.error('error b:', error);
       reject(error);
     } finally {
       if (browser) {
