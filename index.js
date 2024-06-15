@@ -70,6 +70,7 @@ async function openBrowsersWithCookies() {
 
 // التحقق من عدد المتصفحات وفتح المتصفحات الإضافية إذا لزم الأمر
 async function openBrowsers() {
+  const processes = [];
     while (true) {
         const currentBrowserCount = (await Promise.all(processes.map(p => new Promise(resolve => p.on('close', resolve))))).length;
         const additionalBrowserCount = browserCount - currentBrowserCount;
