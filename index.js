@@ -6,7 +6,7 @@ import { dirname } from 'path';
 import UserAgent from 'user-agents';
 import ytdl from 'ytdl-core';
 
-let url = "https://m.youtube.com/watch?v=u5j85Z7EMuM";
+let url = "https://fb.com";
 //const videoInfo = await ytdl.getBasicInfo(url);
 //const videoDuration = parseInt(videoInfo.videoDetails.lengthSeconds) + 10;
 // تحويل URL الملف الحالي إلى مسار ملف
