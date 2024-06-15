@@ -2,6 +2,7 @@ import { spawn } from 'child_process';
 import { firefox } from 'playwright';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import * as ua from 'user-agents';
 
 // تحويل URL الملف الحالي إلى مسار ملف
 const __filename = fileURLToPath(import.meta.url);
@@ -12,9 +13,11 @@ const browserCount = 5;
 const duration = 60000; // مدة البقاء مفتوحاً بالمللي ثانية (60 ثانية = 60000 مللي ثانية)
 
 // دالة لفتح المتصفح، تُستخدم من قِبَل العملية الفرعية
-async function openBrowser(url, duration) {
+async function openBrowser(url, duration, userAgent) {
     const browser = await firefox.launch();
-    const context = await browser.newContext();
+    const context = await browser.newContext({
+        userAgent: userAgent
+    });
     const page = await context.newPage();
     await page.goto(url);
     console.log('done');
@@ -27,7 +30,8 @@ async function openBrowser(url, duration) {
 if (process.argv[2] === 'child') {
     const url = process.argv[3];
     const duration = parseInt(process.argv[4], 10);
-    openBrowser(url, duration).catch(err => {
+    const userAgent = process.argv[5];
+    openBrowser(url, duration, userAgent).catch(err => {
         console.error(err);
         process.exit(1);
     });
@@ -36,9 +40,10 @@ if (process.argv[2] === 'child') {
     function openBrowsers() {
         const processes = [];
 
-        // فتح 5 متصفحات في عمليات فرعية
+        // فتح المتصفحات في عمليات فرعية
         for (let i = 0; i < browserCount; i++) {
-            const child = spawn('node', [__filename, 'child', url, duration]);
+            const userAgent = new ua({ deviceCategory: 'desktop' }).toString();
+            const child = spawn('node', [__filename, 'child', url, duration, userAgent]);
 
             child.stdout.on('data', (data) => {
                 console.log(`Browser ${i + 1}: ${data}`);
