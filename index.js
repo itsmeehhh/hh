@@ -7,14 +7,14 @@ import UserAgent from 'user-agents';
 import ytdl from 'ytdl-core';
 
 let url = "https://m.youtube.com/watch?v=u5j85Z7EMuM";
-const videoInfo = await ytdl.getBasicInfo(url);
-const videoDuration = parseInt(videoInfo.videoDetails.lengthSeconds) + 10;
+//const videoInfo = await ytdl.getBasicInfo(url);
+//const videoDuration = parseInt(videoInfo.videoDetails.lengthSeconds) + 10;
 // تحويل URL الملف الحالي إلى مسار ملف
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const browserCount = 5;
-const duration = videoDuration;
+const duration = 60000;
 async function openBrowser(url, duration, userAgent) {
     const browser = await firefox.launch();
     const context = await browser.newContext({
