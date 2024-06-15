@@ -8,7 +8,7 @@ import UserAgent from 'user-agents';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const url = 'https://www.fb.com';
+const url = 'https://m.youtube.com/watch?v=u5j85Z7EMuM';
 const browserCount = 5;
 const duration = 60000; // مدة البقاء مفتوحاً بالمللي ثانية (60 ثانية = 60000 مللي ثانية)
 console.log(`watching: ${url}`);
@@ -28,6 +28,7 @@ async function openBrowser(url, duration, userAgent) {
 
 // التحقق مما إذا كانت هذه العملية فرعية
 if (process.argv[2] === 'child') {
+    console.log('Child process started');
     const url = process.argv[3];
     const duration = parseInt(process.argv[4], 10);
     const userAgent = process.argv[5];
@@ -35,7 +36,8 @@ if (process.argv[2] === 'child') {
         console.error(err);
         process.exit(1);
     });
-} else {
+}
+ else {
     // الوظيفة الرئيسية لفتح المتصفحات في عمليات فرعية
     function openBrowsers() {
         const processes = [];
