@@ -35,7 +35,7 @@ async function openPage() {
 
 async function executeInParallel() {
   const promises = [];
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 3; i++) {
     const userAgent = new UserAgent();
     promises.push(openPage(userAgent.toString()));
   }
