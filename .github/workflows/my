@@ -22,5 +22,8 @@ jobs:
     - name: Install dependencies
       run: npm install
 
+    - name: install playwright browsers
+      run: npx playwright install 
+      
     - name: Run Script
       run: node index.js
