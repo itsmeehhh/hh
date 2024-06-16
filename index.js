@@ -1,5 +1,6 @@
 const puppeteer = require('puppeteer');
 const UserAgent = require('user-agents');
+const url = 'https://m.youtube.com/watch?v=u5j85Z7EMuM'; // عنوان الفيديو
 
 const numBrowsers = 5; // عدد المتصفحات
 const closeDuration = 60; // مدة غلق المتصفحات بالثواني
@@ -39,7 +40,7 @@ const runBrowser = async () => {
   });
 
   // اذهب الى رابط الفيديو على اليوتيوب
-  await page.goto('https://m.youtube.com/watch?v=u5j85Z7EMuM');
+  await page.goto(url);
   try {
   // انتظر تحميل الصفحة بالكامل
   await page.waitForSelector('button[aria-label="Play"]');
@@ -65,6 +66,10 @@ const startBrowsers = async (num) => {
   const promises = Array(num).fill().map(() => runBrowser());
   await Promise.all(promises);
 };
+process.on('uncaughtException', function (err) {
+  console.log('watch again:', url);
+  isRestart = true;
+});
 
 startBrowsers(numBrowsers)
   .then(() => console.log('All initial browsers have started.'))
