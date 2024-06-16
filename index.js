@@ -1,13 +1,13 @@
-
-const fs = require('fs');
-const child_process = require('child_process');
-const express = require('express');
+import fs from 'fs';
+import child_process from 'child_process';
+import express from 'express';
 const app = express();
-const server = require('http').createServer(app);
-const bodyParser = require("body-parser");
-const path = require('path');
-const { exec } = require('child_process');
-const fetch = require('node-fetch');
+import { createServer } from 'http';
+const server = createServer(app);
+import bodyParser from 'body-parser';
+import path from 'path';
+import { exec } from 'child_process';
+import fetch from 'node-fetch';
 
 const folderName = 'database';
 const children = {};
