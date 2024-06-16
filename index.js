@@ -5,7 +5,7 @@ import UserAgent from 'user-agents';
 const URL = "https://youtube.com/shorts/sI9VgfUvoI8?si=Jw-uq4N5cQ8N9s8d";
 const BROWSERS_COUNT = 5;
 const WATCH_DURATION_SECONDS = 60; // مدة الانتظار بالثانية
-
+console.log('watching');
 const usedUserAgents = new Set(); // مجموعة لتخزين user agents المستخدمة
 const cookiesArray = [
   'SOCS=CAISEwgDEgk2MzcwNjAwNTcaAmFyIAEaBgiAvdSyBg; PREF=tz=Africa.Casablanca&f7=4100&f4=4000000; APISID=X_heg210ystbf7Gk/A1l8xHtkeq5nCKCmb; SAPISID=6fWfh_ffhP8GhFBe/ANO53-z5WbRCV4iXB; __Secure-1PAPISID=6fWfh_ffhP8GhFBe/ANO53-z5WbRCV4iXB; __Secure-3PAPISID=6fWfh_ffhP8GhFBe/ANO53-z5WbRCV4iXB; SID=g.a000kwhLhAh-by0XSp1LFMkEF_RA-CcwqWlOFcds0bo_gRft_y9MjvIW-jtcjGM___lvWGFt0AACgYKAYkSARMSFQHGX2MiAMSySNWs2ov-AoNLYO5fPxoVAUF8yKoRkl1Mp2GijHz6UOTRikcr0076; ST-6hujrl=csn=dsnYcuC-gtMIU3K6&itct=CBQQwJ4JGAAiEwi29dWb1t2GAxW6IAYAHZhqDaI%3D; SIDCC=AKEyXzWi5nrS6l6F4Km_pyPOAeLnMvJEK3AY1lDxYkZtMTAlwWTJ_JNzob3jK8e9UuNYf61i',
@@ -60,6 +60,13 @@ async function openBrowsers() {
       const context = await browser.newContext(contextOptions);
       const page = await context.newPage();
       await page.goto(URL);
+      console.log('gone');
+      try {
+        await page.click('button[aria-label="Play"]');
+        console.log(`Browser ${i+1} clicked`);
+      } catch (e) {
+        console.log(`Browser ${i+1} not clicked`);
+      }
       await page.waitForTimeout(WATCH_DURATION_SECONDS * 1000);
       await browser.close();
     })());
