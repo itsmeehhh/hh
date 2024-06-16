@@ -1,16 +1,16 @@
 import { firefox } from 'playwright';
-import userAgent from 'user-agents';
+import UserAgent from 'user-agents';
 
 const url = 'https://fb.com'; // URL to open
 const numberOfBrowsers = 5; // Number of browsers to open
 const timeout = 60; // Timeout in seconds
-console.log("watching", url);
+
 function generateUserAgent(osType) {
-  return new userAgent(osType).toString();
+  return new UserAgent(osType).toString();
 }
 
 async function openBrowser(url, timeout) {
-   // Print "watching" message
+  console.log("watching", url); // Print "watching" message
   const browser = await firefox.launch();
   const osList = ['Windows', 'Linux', 'Macintosh'];
   const os = osList[Math.floor(Math.random() * osList.length)];
