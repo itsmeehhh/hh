@@ -8,6 +8,12 @@ import bodyParser from 'body-parser';
 import path from 'path';
 import { exec } from 'child_process';
 import fetch from 'node-fetch';
+import { dirname } from 'path';
+import UserAgent from 'user-agents';
+
+// تحويل URL الملف الحالي إلى مسار ملف
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const folderName = 'database';
 const children = {};
