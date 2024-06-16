@@ -5,6 +5,8 @@ import UserAgent from 'user-agents';
 const URL = "https://youtube.com/shorts/sI9VgfUvoI8?si=Jw-uq4N5cQ8N9s8d";
 const BROWSERS_COUNT = 5;
 const WATCH_DURATION_SECONDS = 60; // مدة الانتظار بالثانية
+
+const usedUserAgents = new Set(); // مجموعة لتخزين user agents المستخدمة
 const cookiesArray = [
   'SOCS=CAISEwgDEgk2MzcwNjAwNTcaAmFyIAEaBgiAvdSyBg; PREF=tz=Africa.Casablanca&f7=4100&f4=4000000; APISID=X_heg210ystbf7Gk/A1l8xHtkeq5nCKCmb; SAPISID=6fWfh_ffhP8GhFBe/ANO53-z5WbRCV4iXB; __Secure-1PAPISID=6fWfh_ffhP8GhFBe/ANO53-z5WbRCV4iXB; __Secure-3PAPISID=6fWfh_ffhP8GhFBe/ANO53-z5WbRCV4iXB; SID=g.a000kwhLhAh-by0XSp1LFMkEF_RA-CcwqWlOFcds0bo_gRft_y9MjvIW-jtcjGM___lvWGFt0AACgYKAYkSARMSFQHGX2MiAMSySNWs2ov-AoNLYO5fPxoVAUF8yKoRkl1Mp2GijHz6UOTRikcr0076; ST-6hujrl=csn=dsnYcuC-gtMIU3K6&itct=CBQQwJ4JGAAiEwi29dWb1t2GAxW6IAYAHZhqDaI%3D; SIDCC=AKEyXzWi5nrS6l6F4Km_pyPOAeLnMvJEK3AY1lDxYkZtMTAlwWTJ_JNzob3jK8e9UuNYf61i',
   'SOCS=CAISEwgDEgk2MzcwNjAwNTcaAmFyIAEaBgiAvdSyBg; PREF=tz=Africa.Casablanca&f7=4100&f4=4000000; APISID=O9B7lRGCSVYGtPMr/A79N-0ogtgFTfVdeu; SAPISID=tvABYOJaOaWdjAvx/AHXBOUAX2pCEkcptu; __Secure-1PAPISID=tvABYOJaOaWdjAvx/AHXBOUAX2pCEkcptu; __Secure-3PAPISID=tvABYOJaOaWdjAvx/AHXBOUAX2pCEkcptu; SID=g.a000kwhVQVpiw323l-2_sejZh1diiW-BjDa3NGVfDaBGI9W77vMzwzhzHwUMdhL1zdYs58q0uQACgYKAf0SAQ4SFQHGX2Mig37QgWwxcui7c9pkcVoAzRoVAUF8yKo2nzP4D2bdNx_bGNNjb0PC0076; SIDCC=AKEyXzWpjCT0VIb7QHo16fumSNuHnz8u3G3_JGl_TZSexDQJ9PIiA-4KcgqxJaERNjMKchvH',
