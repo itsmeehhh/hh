@@ -1,51 +1,44 @@
 import { firefox } from 'playwright';
-import UserAgent from 'user-agents';
+import { userAgent } from 'user-agents';
 
-let url = "https://m.youtube.com/watch?v=u5j85Z7EMuM";
-
-async function openPage() {
-  return new Promise(async (resolve, reject) => {
-    let browser;
-    try {
-      browser = await firefox.launch({ headless: true });
-      const context = await browser.newContext();
-      const page = await context.newPage();
-      await page.goto(url, { timeout: 0 });
-      try{
-      await page.click('button[aria-label="Play"]');
-      console.log('clicked');
-      } catch (e) {
-      console.log('no clicked');
-      }
-      await page.waitForTimeout(60000);
-      resolve();
-    } catch (error) {
-      console.error('error b:', error);
-      reject(error);
-    } finally {
-      if (browser) {
-        await browser.close();
-      }
-    }
-  });
+const url = 'https://fb.com'; // URL to open
+const numberOfBrowsers = 5; // Number of browsers to open
+const timeout = 60; // Timeout in seconds
+console.log("watching", url);
+function generateUserAgent(osType) {
+  return new userAgent(osType).toString();
 }
 
-async function executeInParallel() {
-  const promises = [];
-  for (let i = 0; i < 10; i++) {
-    const userAgent = new UserAgent();
-    promises.push(openPage(userAgent.toString()));
+async function openBrowser(url, timeout) {
+   // Print "watching" message
+  const browser = await firefox.launch();
+  const osList = ['Windows', 'Linux', 'Macintosh'];
+  const os = osList[Math.floor(Math.random() * osList.length)];
+  const context = await browser.newContext({
+    userAgent: generateUserAgent(os),
+  });
+  const page = await context.newPage();
+  
+  await page.goto(url);
+  const playButton = await page.$('button.play');
+  
+  if (playButton) {
+    await playButton.click();
+  } else {
+    console.log("No play button found.");
   }
-  await Promise.all(promises).catch(error => {
-    console.error('error run the codes :', error);
-  });
+  
+  setTimeout(async () => {
+    await browser.close();
+    console.log("watching again"); // Print "watching again" message
+    await openBrowser(url, timeout); // Reopen browser after timeout
+  }, timeout * 1000);
 }
 
-async function repeatForever() {
-  while (true) {
-    await executeInParallel();
-    console.log(`watching again : ${url}`);
+async function main() {
+  for (let i = 0; i < numberOfBrowsers; i++) {
+    await openBrowser(url, timeout);
   }
 }
 
-repeatForever();
+main();
