@@ -6,10 +6,9 @@ let url = "https://m.youtube.com/watch?v=u5j85Z7EMuM";
 console.log(`watching: ${url}`);
 let timewatch = 20000;
 const userAgent = new UserAgent();
-    let browser;
-    try {
-      browser = await firefox.launch({ headless: true });
-      const context = await browser.newContext();
+    
+      const browser = await firefox.launch({ headless: true });
+      const context = await browser.newContext(userAgent);
       const page = await context.newPage();
       await page.goto(url, { timeout: 0 });
       console.log('gonne');
@@ -19,9 +18,7 @@ const userAgent = new UserAgent();
      } catch (e) {
        console.log('no clicked');
      }
-        setTimeout(browser.close, 60000)
-    } catch (error) {
-      console.error('error b:', error);
-      console.log(error);
-    } 
-  
+        setTimeout(
+            browser.close,
+            60000)
+    
