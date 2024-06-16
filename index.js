@@ -3,6 +3,8 @@ import { fork } from 'child_process';
 import { join } from 'path';
 import { fileURLToPath } from 'url';
 import { readFileSync } from 'fs';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const url = "https://fb.com";
 const browserCount = 10;
