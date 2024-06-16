@@ -4,7 +4,6 @@ import { spawn } from 'child_process';
 import express from 'express';
 const app = express();
 import { createServer } from 'http';
-const server = createServer(app);
 import bodyParser from 'body-parser';
 import path from 'path';
 import { exec } from 'child_process';
@@ -13,6 +12,7 @@ import { dirname } from 'path';
 import UserAgent from 'user-agents';
 import { Server } from 'socket.io';
 
+const server = createServer();
 const io = new Server(server);
 
 // تحويل URL الملف الحالي إلى مسار ملف
