@@ -19,11 +19,7 @@ const userAgent = new UserAgent();
      } catch (e) {
        console.log('no clicked');
      }
-      await page.waitForTimeout(timewatch);
-      if (browser) {
-        await browser.close();
-      }
-      
+        setTimeout(browser.close, 60000)
     } catch (error) {
       console.error('error b:', error);
       console.log(error);
