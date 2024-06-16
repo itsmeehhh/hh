@@ -5,18 +5,29 @@ import UserAgent from 'user-agents';
 const URL = "https://m.youtube.com/watch?v=u5j85Z7EMuM";
 const BROWSERS_COUNT = 5;
 const WATCH_DURATION_SECONDS = 60; // مدة الانتظار بالثانية
+const usedUserAgents = new Set(); // مجموعة لتخزين user agents المستخدمة
 
 console.log(`watching: ${URL}`);
+
+// دالة لتوليد user agent فريد
+async function generateUniqueUserAgent() {
+  let userAgent;
+  do {
+    userAgent = new UserAgent({ deviceCategory: 'desktop' }).toString();
+  } while (usedUserAgents.has(userAgent)); // التحقق من التكرار
+  usedUserAgents.add(userAgent); // إضافة إلى المجموعة
+  return userAgent;
+}
 
 async function openBrowsers() {
   const browserInstances = [];
 
   for (let i = 0; i < BROWSERS_COUNT; i++) {
     browserInstances.push((async () => {
-      const userAgent = new UserAgent({ deviceCategory: 'desktop' });
+      const userAgent = await generateUniqueUserAgent();
       const browser = await firefox.launch({ headless: true });
-      const context = await browser.newContext({ userAgent: userAgent.toString() });
-      console.log(`Browser ${i+1} userAgent: ${userAgent.toString()}`);
+      const context = await browser.newContext({ userAgent });
+      console.log(`Browser ${i+1} userAgent: ${userAgent}`);
       const page = await context.newPage();
       await page.goto(URL, { timeout: 0 });
       console.log(`Browser ${i+1} gone`);
