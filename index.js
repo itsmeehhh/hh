@@ -1,6 +1,6 @@
 import { firefox } from 'playwright';
 import UserAgent from 'user-agents';
-let url = "https://fb.com";
+let url = "https://m.youtube.com/watch?v=u5j85Z7EMuM";
 console.log(`watching: ${url}`);
 
 async function openPage() {
