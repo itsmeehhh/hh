@@ -16,6 +16,7 @@ async function openPage() {
       console.log('clicked');
       } catch (e) {
       console.log('no clicked');
+      }
       await page.waitForTimeout(60000);
       resolve();
     } catch (error) {
