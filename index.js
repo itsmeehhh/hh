@@ -22,7 +22,7 @@ const workerCode = `
 
   const url = "${url}";
   const browserCloseTimeout = ${browserCloseTimeout};
-
+  console.log('done');
   async function openPage() {
     let browser;
     try {
