@@ -1,7 +1,6 @@
 import { fileURLToPath } from 'url';
-
 import fs from 'fs';
-import child_process from 'child_process';
+import { spawn } from 'child_process';
 import express from 'express';
 const app = express();
 import { createServer } from 'http';
@@ -12,6 +11,9 @@ import { exec } from 'child_process';
 import fetch from 'node-fetch';
 import { dirname } from 'path';
 import UserAgent from 'user-agents';
+import { Server } from 'socket.io';
+
+const io = new Server(server);
 
 // تحويل URL الملف الحالي إلى مسار ملف
 const __filename = fileURLToPath(import.meta.url);
@@ -24,7 +26,7 @@ const logs = {};
 //وظائف تشغيل الملفات 
 function runFile(file) {
   const filePath = `./${folderName}/${file}`;
-  const child = child_process.spawn('node', [filePath]);
+  const child = spawn('node', [filePath]);
   logs[file] = [];
   child.stdout.on('data', (data) => {
     const message = data.toString();
@@ -32,13 +34,14 @@ function runFile(file) {
       logs[file] = [];
     }
     logs[file].push(message);
+    console.log(`${file} stdout: ${message}`);
   });
   child.stderr.on('data', (data) => {
     const message = data.toString();
     if (!logs[file]) {
       logs[file] = [];
     }
-    console.error(`${file} : Code error, see logs for more`);
+    console.error(`${file} stderr: ${message}`);
     logs[file].push(message);
     if (message.includes('Cannot find module')) {
       const moduleName = message.match(/'([^']+)'/)[1];
@@ -55,6 +58,7 @@ function runFile(file) {
   children[file] = child;
 }
 
+// وظيفة لإيقاف تشغيل الملف
 function stopFile(file) {
   const child = children[file];
   if (child) {
@@ -71,6 +75,7 @@ setInterval(() => {
   });
 }, 300000);
 
+// تنفيذ تثبيت الوحدة
 function installModule(moduleName, callback) {
   exec(`npm install ${moduleName}`, (error, stdout, stderr) => {
     if (error) {
@@ -82,6 +87,7 @@ function installModule(moduleName, callback) {
   });
 }
 
+// قراءة الملفات في المجلد وتشغيلها
 fs.readdir(folderName, (err, files) => {
   if (err) {
     console.error(err);
@@ -90,6 +96,7 @@ fs.readdir(folderName, (err, files) => {
   files.forEach(runFile);
 });
 
+// مراقبة المجلد للتغييرات
 fs.watch(folderName, (eventType, filename) => {
   if (eventType === 'rename') {
     fs.access(`./${folderName}/${filename}`, (err) => {
