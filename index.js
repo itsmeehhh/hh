@@ -1,74 +1,50 @@
-const puppeteer = require('puppeteer');
-const UserAgent = require('user-agents');
-const url = 'https://m.youtube.com/watch?v=u5j85Z7EMuM'; // عنوان الفيديو
+import { firefox } from 'playwright';
+import UserAgent from 'user-agents';
 
-const numBrowsers = 5; // عدد المتصفحات
-const closeDuration = 60; // مدة غلق المتصفحات بالثواني
+let url = "https://m.youtube.com/watch?v=u5j85Z7EMuM";
 
-// مجموعة لتخزين user agents المستخدمة
-const usedUserAgents = new Set();
-
-const getUniqueUserAgent = () => {
-  let userAgent;
-  do {
-    // توليد User-Agent جديد والتأكد من أنه ليس لجهاز جوال
-    userAgent = new UserAgent({ deviceCategory: 'desktop' }).toString();
-  } while (usedUserAgents.has(userAgent)); // التأكد من عدم التكرار
-  usedUserAgents.add(userAgent);
-  return userAgent;
-};
-
-const runBrowser = async () => {
-  // إنشاء وكيل مستخدم فريد
-  const userAgent = getUniqueUserAgent();
-
-  // أفتح المتصفح
-  const browser = await puppeteer.launch({ headless: true });
-  const page = await browser.newPage();
-
-  // تعيين وكيل المستخدم العشوائي
-  await page.setUserAgent(userAgent);
-
-  // تعيين viewport لتكون متوافقة مع وكيل المستخدم
-  await page.setViewport({ width: 1280, height: 800 });
-
-  // ضبط platform لتكون متوافقة مع وكيل المستخدم
-  await page.evaluateOnNewDocument(() => {
-    Object.defineProperty(navigator, 'platform', {
-      get: () => 'Win32', // يمكنك تغييره إلى 'MacIntel' إذا كنت تريد محاكاة نظام macOS
-    });
+async function openPage() {
+  return new Promise(async (resolve, reject) => {
+    let browser;
+    try {
+      browser = await firefox.launch({ headless: true });
+      const context = await browser.newContext();
+      const page = await context.newPage();
+      await page.goto(url, { timeout: 0 });
+      try{
+      await page.click('button[aria-label="Play"]');
+      console.log('clicked');
+      } catch (e) {
+      console.log('no clicked');
+      await page.waitForTimeout(60000);
+      resolve();
+    } catch (error) {
+      console.error('error b:', error);
+      reject(error);
+    } finally {
+      if (browser) {
+        await browser.close();
+      }
+    }
   });
+}
 
-  // اذهب الى رابط الفيديو على اليوتيوب
-  
-    await page.goto(url);
-    // انتظر تحميل الصفحة بالكامل
-   try { 
-    await page.waitForSelector('button[aria-label="Play"]');
-    // اضغط على زر التشغيل
-    await page.click('button[aria-label="Play"]');
-    console.log('clicked');
-  } catch (error) {
-    console.error('no clicked');
+async function executeInParallel() {
+  const promises = [];
+  for (let i = 0; i < 10; i++) {
+    const userAgent = new UserAgent();
+    promises.push(openPage(userAgent.toString()));
   }
+  await Promise.all(promises).catch(error => {
+    console.error('error run the codes :', error);
+  });
+}
 
-  // انتظر مدة محددة
-  await new Promise(resolve => setTimeout(resolve, closeDuration * 1000));
+async function repeatForever() {
+  while (true) {
+    await executeInParallel();
+    console.log(`watching again : ${url}`);
+  }
+}
 
-  // اغلق المتصفح
-  await browser.close();
-
-  // إعادة تشغيل المتصفح
-  console.log('restart');
-  runBrowser();
-};
-
-// إنشاء مصفوفة تحتوي على الوعود لتشغيل المتصفحات
-const startBrowsers = async (num) => {
-  const promises = Array(num).fill().map(() => runBrowser());
-  await Promise.all(promises);
-};
-
-startBrowsers(numBrowsers)
-  .then(() => console.log('All initial browsers have started.'))
-  .catch(error => console.error('An error occurred:', error));
+repeatForever();
