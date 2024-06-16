@@ -1,6 +1,6 @@
 import { firefox } from 'playwright';
 import UserAgent from 'user-agents';
-import ytdl from 'ytdl-core';
+
 
 let url = "https://m.youtube.com/watch?v=u5j85Z7EMuM";
 console.log(`watching: ${url}`);
