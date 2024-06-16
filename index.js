@@ -1,48 +1,28 @@
+import { fork } from 'child_process';
 import { firefox } from 'playwright';
-import UserAgent from 'user-agents';
-let url = "https://m.youtube.com/watch?v=u5j85Z7EMuM";
-console.log(`watching: ${url}`);
 
-async function openPage() {
-  return new Promise(async (resolve, reject) => {
-    let browser;
-    try {
-      browser = await firefox.launch({ headless: true });
-      const context = await browser.newContext();
-      const page = await context.newPage();
-      await page.goto(url, { timeout: 60000 });
-      console.log('go');
-      await page.click('button[aria-label="Play"]');
-      console.log('clicked');
-      await page.waitForTimeout(120000);
-      resolve();
-    } catch (error) {
-      console.error('error:', error);
-      reject(error);
-    } finally {
-      if (browser) {
-        await browser.close();
-      }
-    }
-  });
-}
-
-async function executeInParallel() {
-  const promises = [];
-  for (let i = 0; i < 10; i++) {
-    const userAgent = new UserAgent();
-    promises.push(openPage(userAgent.toString()));
+async function openBrowserAndPlayVideo() {
+  const browser = await firefox.launch({ headless: true });
+  const page = await browser.newPage();
+  await page.goto('https://m.youtube.com/watch?v=u5j85Z7EMuM');
+  console.log('1');
+  // Click the play button if it exists
+  const playButton = await page.$('button[aria-label="Play"]');
+  if (playButton) {
+    await playButton.click();
+console.log('2');
   }
-  await Promise.all(promises).catch(error => {
-    console.error('error run the codes :', error);
-  });
+  
+  // Close the browser after a minute
+  setTimeout(async () => {
+    await browser.close();
+  }, 60000);
 }
 
-async function repeatForever() {
-  while (true) {
-    await executeInParallel();
-    console.log(`watching again : ${url}`);
-  }
+for (let i = 0; i < 5; i++) {
+  fork(import.meta.url, ['child'], { execArgv: [] });
 }
 
-repeatForever();
+if (process.argv[2] === 'child') {
+  openBrowserAndPlayVideo();
+}
