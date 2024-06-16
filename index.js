@@ -8,7 +8,7 @@ import fs from 'fs';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const url = "https://fb.com";
+const url = "https://m.youtube.com/watch?v=u5j85Z7EMuM";
 const browserCount = 10;
 const browserCloseTimeout = 120000; // 2 minutes
 
