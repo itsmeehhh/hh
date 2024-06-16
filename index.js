@@ -1,7 +1,7 @@
 import { firefox } from 'playwright';
 import UserAgent from 'user-agents';
 
-let url = "https://fb.com";
+let url = "https://m.youtube.com/watch?v=u5j85Z7EMuM";
 console.log(`watching: ${url}`);
 
 async function openPage(userAgent) {
@@ -33,7 +33,7 @@ async function openPage(userAgent) {
 
 async function executeInParallel() {
   const promises = [];
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 5; i++) {
     // إنشاء user agent خاصة بالحاسوب فقط
     const userAgent = new UserAgent({ deviceCategory: 'desktop' });
     promises.push(openPage(userAgent.toString()));
