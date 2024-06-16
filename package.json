@@ -12,13 +12,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@octokit/rest": "^20.1.1",
-    "@whiskeysockets/baileys": "^6.7.4",
-    "aki-api": "^6.0.9",
-    "apk-dl.js": "^1.0.0",
-    "betabotz-tools": "^0.0.7",
+     "fs": "1.0.0",
     "body-parser": "^1.20.2",
-    "botly": "^1.6.2",
     "chokidar": "^3.5.3",
     "colors": "^1.4.0",
     "dotenv": "^10.0.0",
@@ -29,17 +24,11 @@
     "figlet": "^1.7.0",
     "file-type": "^16.5.3",
     "formdata-node": "^6.0.3",
-    "github": "^14.0.0",
-    "github-api": "^3.4.0",
     "multer": "^1.4.5-lts.1",
     "node-fetch": "^2.6.7",
     "node-schedule": "^2.1.1",
     "nodemon": "^3.0.3",
     "pino": "^9.1.0",
-    "sequelize": "^6.25.3",
-    "socket.io": "^4.7.5",
-    "sqlite3": "^5.1.2",
-    "tesseract.js": "^5.0.3",
-    "unzipper": "^0.10.14"
+    "socket.io": "^4.7.5"
   }
 }
