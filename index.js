@@ -19,7 +19,7 @@ async function openBrowser() {
   console.log('watch');
   
   await page.waitForSelector('.icon-play, .play-button, [aria-label="Play"]'); // استبدل بالمحدد الصحيح لأيقونة play
-  await page.click('.icon-play, .play-button, [aria-label="Play"]'); // الضغط
+  await page.click('button[aria-label="Play"]'); // الضغط
   console.log('clicked');
   await new Promise(resolve => setTimeout(resolve, 60000)); // الانتظار لمدة دقيقة واحدة
   await browser.close();
