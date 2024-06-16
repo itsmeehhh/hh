@@ -9,6 +9,7 @@ const userAgent = new UserAgent();
     
       const browser = await firefox.launch({ headless: true });
       const context = await browser.newContext(userAgent);
+      console.log(userAgent);
       const page = await context.newPage();
       await page.goto(url, { timeout: 0 });
       console.log('gonne');
