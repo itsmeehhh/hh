@@ -23,7 +23,7 @@ jobs:
       run: npm install
 
     - name: install playwright browsers
-      run: npx playwright install 
+      run: npx playwright install firefox 
       
     - name: Run Script
       run: node index.js
