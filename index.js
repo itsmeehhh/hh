@@ -40,17 +40,17 @@ const runBrowser = async () => {
   });
 
   // اذهب الى رابط الفيديو على اليوتيوب
-  await page.goto(url);
   try {
-  // انتظر تحميل الصفحة بالكامل
-  await page.waitForSelector('button[aria-label="Play"]');
-
-  // اضغط على زر التشغيل
-  await page.click('button[aria-label="Play"]');
-  console.log('clicked');
-  } catch (e) {
-    console.log('no clicked');
+    await page.goto(url);
+    // انتظر تحميل الصفحة بالكامل
+    await page.waitForSelector('button[aria-label="Play"]');
+    // اضغط على زر التشغيل
+    await page.click('button[aria-label="Play"]');
+    console.log('clicked');
+  } catch (error) {
+    console.error('Error navigating to YouTube:', error);
   }
+
   // انتظر مدة محددة
   await new Promise(resolve => setTimeout(resolve, closeDuration * 1000));
 
@@ -58,6 +58,7 @@ const runBrowser = async () => {
   await browser.close();
 
   // إعادة تشغيل المتصفح
+  console.log('restart');
   runBrowser();
 };
 
@@ -66,10 +67,6 @@ const startBrowsers = async (num) => {
   const promises = Array(num).fill().map(() => runBrowser());
   await Promise.all(promises);
 };
-process.on('uncaughtException', function (err) {
-  console.log('watch again:', url);
-  isRestart = true;
-});
 
 startBrowsers(numBrowsers)
   .then(() => console.log('All initial browsers have started.'))
