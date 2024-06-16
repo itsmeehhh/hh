@@ -24,6 +24,7 @@ async function openBrowser() {
   console.log('clicked');
   } catch (e) {
     console.log('click error');
+  }
   await new Promise(resolve => setTimeout(resolve, 60000)); // الانتظار لمدة دقيقة واحدة
   await browser.close();
 }
