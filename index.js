@@ -3,7 +3,8 @@ import { fork } from 'child_process';
 import { join } from 'path';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { fs, readFileSync, writeFileSync } from 'fs';
+import { readFileSync, writeFileSync } from 'fs';
+import fs from 'fs';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
