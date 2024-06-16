@@ -15,9 +15,9 @@ console.log(`Watching: ${url}`);
 
 // Helper to create inline worker code
 const workerCode = `
-  const { parentPort } = require('worker_threads');
-  const { firefox } = require('playwright');
-  const UserAgent = require('user-agents');
+  import { parentPort } from 'worker_threads';
+  import { firefox } from 'playwright';
+  import UserAgent from 'user-agents';
 
   const url = "${url}";
   const browserCloseTimeout = ${browserCloseTimeout};
