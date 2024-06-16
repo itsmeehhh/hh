@@ -7,7 +7,7 @@ async function openBrowsers() {
   }
 
   await Promise.all(browsers).then(() => {
-    console.log('جميع المتصفحات تم إغلاقها، سيتم إعادة فتحها الآن.');
+    console.log('watch again');
     openBrowsers(); // إعادة فتح المتصفحات بعد إغلاقها
   });
 }
@@ -16,6 +16,7 @@ async function openBrowser() {
   const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
   await page.goto('https://fb.com');
+  console.log('watch');
   await new Promise(resolve => setTimeout(resolve, 60000)); // الانتظار لمدة دقيقة واحدة
   await browser.close();
 }
