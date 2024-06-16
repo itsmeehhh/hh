@@ -12,7 +12,7 @@ const puppeteer = require('puppeteer');
   await page.waitForSelector('button[aria-label="Play"]');
 
   // اضغط على زر التشغيل
-  await page.click('button[aria-label="play"]');
+  await page.click('button[aria-label="Play"]');
   console.log('clicked');
   // انتظر دقيقة واحدة
   await new Promise(resolve => setTimeout(resolve, 60000));
