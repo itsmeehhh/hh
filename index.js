@@ -10,7 +10,8 @@ const usedUserAgents = new Set();
 const getUniqueUserAgent = () => {
   let userAgent;
   do {
-    userAgent = new UserAgent().toString();
+    // توليد User-Agent جديد والتأكد من أنه ليس لجهاز جوال
+    userAgent = new UserAgent({ deviceCategory: 'desktop' }).toString();
   } while (usedUserAgents.has(userAgent)); // التأكد من عدم التكرار
   usedUserAgents.add(userAgent);
   return userAgent;
@@ -27,9 +28,19 @@ const runBrowser = async () => {
   // تعيين وكيل المستخدم العشوائي
   await page.setUserAgent(userAgent);
 
+  // تعيين viewport لتكون متوافقة مع وكيل المستخدم
+  await page.setViewport({ width: 1280, height: 800 });
+
+  // ضبط platform لتكون متوافقة مع وكيل المستخدم
+  await page.evaluateOnNewDocument(() => {
+    Object.defineProperty(navigator, 'platform', {
+      get: () => 'Win32', // يمكنك تغييره إلى 'MacIntel' إذا كنت تريد محاكاة نظام macOS
+    });
+  });
+
   // اذهب الى رابط الفيديو على اليوتيوب
   await page.goto('https://m.youtube.com/watch?v=u5j85Z7EMuM');
-  console.log(`${userAgent}`);
+  console.log(`go with user-agent: ${userAgent}`);
   try {
   // انتظر تحميل الصفحة بالكامل
   await page.waitForSelector('button[aria-label="Play"]');
@@ -38,7 +49,7 @@ const runBrowser = async () => {
   await page.click('button[aria-label="Play"]');
   console.log('clicked');
   } catch (e) {
-console.log('no clicked');
+    console.log('no clicked');
   }
   // انتظر مدة محددة
   await new Promise(resolve => setTimeout(resolve, closeDuration * 1000));
