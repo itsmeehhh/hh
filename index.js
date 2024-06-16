@@ -4,7 +4,7 @@ import UserAgent from 'user-agents';
 // تعريفات
 const URL = "https://youtube.com/shorts/sI9VgfUvoI8?si=Jw-uq4N5cQ8N9s8d";
 const BROWSERS_COUNT = 5;
-const WATCH_DURATION_SECONDS = 60; // مدة الانتظار بالثانية
+const WATCH_DURATION_SECONDS = 25; // مدة الانتظار بالثانية
 console.log('watching');
 const usedUserAgents = new Set(); // مجموعة لتخزين user agents المستخدمة
 const cookiesArray = [
@@ -74,6 +74,7 @@ async function openBrowsers() {
 
   // انتظار جميع المتصفحات حتى تنتهي
   await Promise.all(browserInstances);
+  openBrowsers()
 }
 
 // بدء العملية
