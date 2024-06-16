@@ -13,7 +13,7 @@ async function openBrowsers() {
 }
 
 async function openBrowser() {
-  const browser = await puppeteer.launch({ headless: false });
+  const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
   await page.goto('https://fb.com');
   console.log('watch');
