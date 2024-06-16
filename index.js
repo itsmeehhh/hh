@@ -40,15 +40,16 @@ const runBrowser = async () => {
   });
 
   // اذهب الى رابط الفيديو على اليوتيوب
-  try {
+  
     await page.goto(url);
     // انتظر تحميل الصفحة بالكامل
+   try { 
     await page.waitForSelector('button[aria-label="Play"]');
     // اضغط على زر التشغيل
     await page.click('button[aria-label="Play"]');
     console.log('clicked');
   } catch (error) {
-    console.error('Error navigating to YouTube:', error);
+    console.error('no clicked');
   }
 
   // انتظر مدة محددة
