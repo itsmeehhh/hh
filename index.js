@@ -20,16 +20,7 @@ const __dirname = dirname(__filename);
 const folderName = 'database';
 const children = {};
 const logs = {};
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'views')));
 
-io.on('connection', (socket) => {
-  console.log('New client connected');
-  socket.on('requestLogs', (filename) => {
-    socket.emit('logs', logs[filename]);
-  });
-});
 //وظائف تشغيل الملفات 
 function runFile(file) {
   const filePath = `./${folderName}/${file}`;
