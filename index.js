@@ -1,5 +1,5 @@
 import { firefox } from 'playwright';
-import { userAgent } from 'user-agents';
+import userAgent from 'user-agents';
 
 const url = 'https://fb.com'; // URL to open
 const numberOfBrowsers = 5; // Number of browsers to open
