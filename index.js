@@ -4,7 +4,7 @@ import UserAgent from 'user-agents';
 
 let url = "https://m.youtube.com/watch?v=u5j85Z7EMuM";
 console.log(`watching: ${url}`);
-let timewatch = 60000;
+let timewatch = 6000;
 
 async function openPage() {
   return new Promise(async (resolve, reject) => {
@@ -14,6 +14,7 @@ async function openPage() {
       const context = await browser.newContext();
       const page = await context.newPage();
       await page.goto(url, { timeout: 0 });
+      console.log('gonne');
      try {
       await page.click('button[aria-label="Play"]');
       console.log('clicked');
