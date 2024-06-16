@@ -17,7 +17,7 @@ const getUniqueUserAgent = () => {
   return userAgent;
 };
 
-// مصفوفة تحتوي على الكوكيز المقسمة بين المتصفحات
+// كوكيز يوتيوب كمصفوفة
 const cookiesArray = [
   'SOCS=CAISEwgDEgk2MzcwNjAwNTcaAmFyIAEaBgiAvdSyBg; PREF=tz=Africa.Casablanca&f7=4100&f4=4000000; APISID=X_heg210ystbf7Gk/A1l8xHtkeq5nCKCmb; SAPISID=6fWfh_ffhP8GhFBe/ANO53-z5WbRCV4iXB; __Secure-1PAPISID=6fWfh_ffhP8GhFBe/ANO53-z5WbRCV4iXB; __Secure-3PAPISID=6fWfh_ffhP8GhFBe/ANO53-z5WbRCV4iXB; SID=g.a000kwhLhAh-by0XSp1LFMkEF_RA-CcwqWlOFcds0bo_gRft_y9MjvIW-jtcjGM___lvWGFt0AACgYKAYkSARMSFQHGX2MiAMSySNWs2ov-AoNLYO5fPxoVAUF8yKoRkl1Mp2GijHz6UOTRikcr0076; ST-6hujrl=csn=dsnYcuC-gtMIU3K6&itct=CBQQwJ4JGAAiEwi29dWb1t2GAxW6IAYAHZhqDaI%3D; SIDCC=AKEyXzWi5nrS6l6F4Km_pyPOAeLnMvJEK3AY1lDxYkZtMTAlwWTJ_JNzob3jK8e9UuNYf61i',
   'SOCS=CAISEwgDEgk2MzcwNjAwNTcaAmFyIAEaBgiAvdSyBg; PREF=tz=Africa.Casablanca&f7=4100&f4=4000000; APISID=O9B7lRGCSVYGtPMr/A79N-0ogtgFTfVdeu; SAPISID=tvABYOJaOaWdjAvx/AHXBOUAX2pCEkcptu; __Secure-1PAPISID=tvABYOJaOaWdjAvx/AHXBOUAX2pCEkcptu; __Secure-3PAPISID=tvABYOJaOaWdjAvx/AHXBOUAX2pCEkcptu; SID=g.a000kwhVQVpiw323l-2_sejZh1diiW-BjDa3NGVfDaBGI9W77vMzwzhzHwUMdhL1zdYs58q0uQACgYKAf0SAQ4SFQHGX2Mig37QgWwxcui7c9pkcVoAzRoVAUF8yKo2nzP4D2bdNx_bGNNjb0PC0076; SIDCC=AKEyXzWpjCT0VIb7QHo16fumSNuHnz8u3G3_JGl_TZSexDQJ9PIiA-4KcgqxJaERNjMKchvH',
@@ -55,8 +55,18 @@ const runBrowser = async (cookies) => {
   await page.goto('https://m.youtube.com/watch?v=u5j85Z7EMuM');
   
   if (cookies) {
+    // تنظيم الكوكيزات بالشكل المطلوب
+    const formattedCookies = cookies.map(cookie => {
+      const [name, value] = cookie.split('=');
+      return {
+        name: name.trim(),
+        value: value.trim(),
+        domain: '.youtube.com',
+        path: '/'
+      };
+    });
     // تعيين الكوكيز للصفحة
-    await page.setCookie(...cookies);
+    await page.setCookie(...formattedCookies);
   }
 
   try {
@@ -80,28 +90,9 @@ const runBrowser = async (cookies) => {
   runBrowser();
 };
 
-// إنشاء مصفوفة تحتوي على الوعود لتشغيل المتصفحات
+// إعادة تشغيل المتصفحات
 const startBrowsers = async (num) => {
-  // تقسيم الكوكيز على المتصفحات
-  const cookiesPerBrowser = Math.ceil(cookiesArray.length / num);
-  
-  // إنشاء مصفوفة لتخزين الكوكيز المقسمة
-  const cookiesChunks = [];
-  for (let i = 0; i < num; i++) {
-    cookiesChunks.push(cookiesArray.slice(i * cookiesPerBrowser, (i + 1) * cookiesPerBrowser));
-  }
-  
-  // بدء المتصفحات مع الكوكيز المقسمة
-  const promises = cookiesChunks.map(cookies => runBrowser(cookies));
-  
-  // التحقق من عدد المتصفحات والكوكيز
-  if (num > cookiesArray.length) {
-    const extraBrowsers = num - cookiesArray.length;
-    for (let i = 0; i < extraBrowsers; i++) {
-      promises.push(runBrowser());
-    }
-  }
-  
+  const promises = Array(num).fill().map(() => runBrowser(cookiesArray));
   await Promise.all(promises);
 };
 
