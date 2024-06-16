@@ -11,6 +11,7 @@ async function openPage() {
       const context = await browser.newContext();
       const page = await context.newPage();
       await page.goto(url, { timeout: 60000 });
+      console.log('go');
       await page.click('button[aria-label="Play"]');
       console.log('clicked');
       await page.waitForTimeout(120000);
