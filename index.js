@@ -1,5 +1,5 @@
 const puppeteer = require('puppeteer');
-
+const url = 'https://m.youtube.com/watch?v=u5j85Z7EMuM'
 async function openBrowsers() {
   const browsers = [];
   for (let i = 0; i < 5; i++) {
@@ -15,10 +15,10 @@ async function openBrowsers() {
 async function openBrowser() {
   const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
-  await page.goto('https://fb.com');
+  await page.goto('url');
   console.log('watch');
   
-  await page.waitForSelector('.icon-play, .play-button, [aria-label="Play"]'); // استبدل بالمحدد الصحيح لأيقونة play
+  await page.waitForSelector('button[aria-label="Play"]'); // استبدل بالمحدد الصحيح لأيقونة play
   await page.click('button[aria-label="Play"]'); // الضغط
   console.log('clicked');
   await new Promise(resolve => setTimeout(resolve, 60000)); // الانتظار لمدة دقيقة واحدة
