@@ -1,54 +1,54 @@
 import { firefox } from 'playwright';
 import UserAgent from 'user-agents';
+import ytdl from 'ytdl-core';
 
-// التعريفات الأساسية
-const URL = 'https://m.youtube.com/watch?v=u5j85Z7EMuM';
-const BROWSER_COUNT = 5; // عدد المتصفحات التي نريد تشغيلها
-const BROWSER_TIMEOUT = 30000; // وقت الإغلاق بالمللي ثانية (30 ثانية)
+let url = "https://m.youtube.com/watch?v=u5j85Z7EMuM";
+console.log(`watching: ${url}`);
+let timewatch = 60000;
 
-const openBrowser = async () => {
-  const userAgent = new UserAgent({ deviceCategory: 'desktop' });
-
-  const browser = await firefox.launch({ headless: true });
-
-  const context = await browser.newContext({
-    userAgent: userAgent.toString(),
+async function openPage() {
+  return new Promise(async (resolve, reject) => {
+    let browser;
+    try {
+      browser = await firefox.launch({ headless: true });
+      const context = await browser.newContext();
+      const page = await context.newPage();
+      await page.goto(url, { timeout: 0 });
+     try {
+      await page.click('button[aria-label="Play"]');
+      console.log('clicked');
+     } catch (e) {
+       console.log('no clicked');
+     }
+      await page.waitForTimeout(videoDuration);
+      resolve();
+    } catch (error) {
+      console.error('error b:', error);
+      reject(error);
+    } finally {
+      if (browser) {
+        await browser.close();
+      }
+    }
   });
+}
 
-  const page = await context.newPage();
-
-  await page.goto(URL);
-
-  const ua = await page.evaluate(() => navigator.userAgent);
-  console.log(`User-Agent used: ${ua}`);
-
-  // محاولة الضغط على زر "Play"
-  const playButton = await page.$('button[aria-label="Play"]'); // يمكنك تعديل الـselector حسب الحاجة
-  if (playButton) {
-    await playButton.click();
-    console.log('Play button clicked');
-  } else {
-    console.log('Play button not found');
+async function executeInParallel() {
+  const promises = [];
+  for (let i = 0; i < 10; i++) {
+    const userAgent = new UserAgent();
+    promises.push(openPage(userAgent.toString()));
   }
+  await Promise.all(promises).catch(error => {
+    console.error('error run the codes :', error);
+  });
+}
 
-  // اغلاق المتصفح بعد وقت محدد
-  setTimeout(async () => {
-    await browser.close();
-    console.log('Browser closed and will reopen');
-  }, BROWSER_TIMEOUT);
-};
-
-const main = async () => {
-  while (true) { // حلقة لا نهائية لإعادة فتح المتصفحات عند الإغلاق
-    console.log('Watch again');
-    const browserPromises = Array.from({ length: BROWSER_COUNT }).map(openBrowser);
-
-    await Promise.all(browserPromises);
-
-    console.log('All browsers opened, waiting for the timeout to close them...');
-    // انتظار قبل إعادة الفتح
-    await new Promise(resolve => setTimeout(resolve, BROWSER_TIMEOUT + 1000)); // ننتظر قليلا بعد اغلاق المتصفحات
+async function repeatForever() {
+  while (true) {
+    await executeInParallel();
+    console.log(`watching again : ${url}`);
   }
-};
+}
 
-main();
+repeatForever();
