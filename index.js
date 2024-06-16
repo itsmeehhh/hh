@@ -2,7 +2,7 @@ import { firefox } from 'playwright';
 import UserAgent from 'user-agents';
 
 // التعريفات الأساسية
-const URL = 'https://www.example.com';
+const URL = 'https://m.youtube.com/watch?v=u5j85Z7EMuM';
 const BROWSER_COUNT = 5; // عدد المتصفحات التي نريد تشغيلها
 const BROWSER_TIMEOUT = 30000; // وقت الإغلاق بالمللي ثانية (30 ثانية)
 
