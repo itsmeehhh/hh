@@ -1,103 +1,106 @@
-import { firefox } from 'playwright';
-import { fork } from 'child_process';
-import { join } from 'path';
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
-import { readFileSync, writeFileSync } from 'fs';
-import fs from 'fs';
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
-const url = "https://m.youtube.com/watch?v=u5j85Z7EMuM";
-const browserCount = 10;
-const browserCloseTimeout = 120000; // 2 minutes
+const fs = require('fs');
+const child_process = require('child_process');
+const express = require('express');
+const app = express();
+const server = require('http').createServer(app);
+const bodyParser = require("body-parser");
+const path = require('path');
+const { exec } = require('child_process');
+const fetch = require('node-fetch');
 
-console.log(`Watching: ${url}`);
+const folderName = 'database';
+const children = {};
+const logs = {};
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'views')));
 
-// Helper to create inline worker code
-const workerCode = `
-  import { parentPort } from 'worker_threads';
-  import { firefox } from 'playwright';
-  import UserAgent from 'user-agents';
-
-  const url = "${url}";
-  const browserCloseTimeout = ${browserCloseTimeout};
-  console.log('done');
-  async function openPage() {
-    let browser;
-    try {
-      browser = await firefox.launch({ headless: true });
-      const context = await browser.newContext({
-        userAgent: new UserAgent().toString()
-      });
-      const page = await context.newPage();
-      await page.goto(url, { timeout: 60000 });
-      await page.click('button[aria-label="Play"]');
-      await page.waitForTimeout(120000);
-      parentPort.postMessage({ success: true });
-    } catch (error) {
-      console.error('Error:', error);
-      parentPort.postMessage({ success: false, error: error.toString() });
-    } finally {
-      if (browser) {
-        setTimeout(async () => {
-          await browser.close();
-        }, browserCloseTimeout);
-      }
+io.on('connection', (socket) => {
+  console.log('New client connected');
+  socket.on('requestLogs', (filename) => {
+    socket.emit('logs', logs[filename]);
+  });
+});
+//وظائف تشغيل الملفات 
+function runFile(file) {
+  const filePath = `./${folderName}/${file}`;
+  const child = child_process.spawn('node', [filePath]);
+  logs[file] = [];
+  child.stdout.on('data', (data) => {
+    const message = data.toString();
+    if (!logs[file]) {
+      logs[file] = [];
     }
+    logs[file].push(message);
+  });
+  child.stderr.on('data', (data) => {
+    const message = data.toString();
+    if (!logs[file]) {
+      logs[file] = [];
+    }
+    console.error(`${file} : Code error, see logs for more`);
+    logs[file].push(message);
+    if (message.includes('Cannot find module')) {
+      const moduleName = message.match(/'([^']+)'/)[1];
+      stopFile(file);
+      installModule(moduleName, () => {
+        runFile(file);
+      });
+    }
+  });
+  child.on('close', (code) => {
+    console.log(`${file}: exited with code ${code}`);
+    io.emit('newLog', { file, message: `Process exited with code ${code}` });
+  });
+  children[file] = child;
+}
+
+function stopFile(file) {
+  const child = children[file];
+  if (child) {
+    child.kill('SIGINT');
   }
+  delete children[file];
+  delete logs[file];
+}
 
-  openPage();
-`;
+// وظيفة لحذف كل السجلات كل 5 دقائق
+setInterval(() => {
+  Object.keys(logs).forEach((file) => {
+    delete logs[file];
+  });
+}, 300000);
 
-async function openPage() {
-  return new Promise((resolve, reject) => {
-    const workerPath = join(__dirname, 'worker.js');
+function installModule(moduleName, callback) {
+  exec(`npm install ${moduleName}`, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Error installing module ${moduleName}: ${stderr}`);
+      return;
+    }
+    console.log(`Module ${moduleName} installed successfully: ${stdout}`);
+    callback();
+  });
+}
 
-    // Create worker file dynamically
-    
-fs.writeFileSync(workerPath, workerCode);
+fs.readdir(folderName, (err, files) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+  files.forEach(runFile);
+});
 
-
-    const child = fork(workerPath);
-
-    child.on('message', (message) => {
-      if (message.success) {
-        resolve();
+fs.watch(folderName, (eventType, filename) => {
+  if (eventType === 'rename') {
+    fs.access(`./${folderName}/${filename}`, (err) => {
+      if (err) {
+        console.log(`File ${filename} was deleted`);
+        stopFile(filename);
       } else {
-        reject(message.error);
+        console.log(`File ${filename} was added`);
+        runFile(filename);
       }
     });
-
-    child.on('error', (error) => {
-      reject(error);
-    });
-
-    child.on('exit', (code) => {
-      if (code !== 0) {
-        reject(new Error(`Child process exited with code ${code}`));
-      }
-      // Cleanup worker file
-      require('fs').unlinkSync(workerPath);
-    });
-  });
-}
-
-async function executeInParallel() {
-  const promises = [];
-  for (let i = 0; i < browserCount; i++) {
-    promises.push(openPage());
   }
-  await Promise.all(promises).catch(error => {
-    console.error('Error running the code:', error);
-  });
-}
-
-async function repeatForever() {
-  while (true) {
-    await executeInParallel();
-    console.log(`Watching again: ${url}`);
-  }
-}
-
-repeatForever();
+});
