@@ -54,7 +54,9 @@ async function openPage() {
     const workerPath = join(__dirname, 'worker.js');
 
     // Create worker file dynamically
-    require('fs').writeFileSync(workerPath, workerCode);
+    
+fs.writeFileSync(workerPath, workerCode);
+
 
     const child = fork(workerPath);
 
