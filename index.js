@@ -3,7 +3,7 @@ const UserAgent = require('user-agents');
 const url = 'https://m.youtube.com/watch?v=u5j85Z7EMuM'
 const numBrowsers = 5; // عدد المتصفحات
 const closeDuration = 60; // مدة غلق المتصفحات بالثواني
-
+console.log('watching');
 const runBrowser = async () => {
   // إنشاء وكيل مستخدم عشوائي
   const userAgent = new UserAgent().toString();
@@ -21,11 +21,13 @@ const runBrowser = async () => {
   
   // انتظر تحميل الصفحة بالكامل
   await page.waitForSelector('button[aria-label="Play"]');
-
+try {
   // اضغط على زر التشغيل
   await page.click('button[aria-label="Play"]');
   console.log('clicked');
-  
+} catch (e) {
+  console.log('no clicked');
+}
   // انتظر مدة محددة
   await new Promise(resolve => setTimeout(resolve, closeDuration * 1000));
 
@@ -40,6 +42,7 @@ const runBrowser = async () => {
 const startBrowsers = async (num) => {
   const promises = Array(num).fill().map(() => runBrowser());
   await Promise.all(promises);
+  console.log('watching again');
 };
 
 startBrowsers(numBrowsers)
