@@ -1,16 +1,23 @@
 const puppeteer = require('puppeteer');
-
+const UserAgent = require('user-agents');
+const url = 'https://m.youtube.com/watch?v=u5j85Z7EMuM'
 const numBrowsers = 5; // عدد المتصفحات
 const closeDuration = 60; // مدة غلق المتصفحات بالثواني
 
 const runBrowser = async () => {
+  // إنشاء وكيل مستخدم عشوائي
+  const userAgent = new UserAgent().toString();
+
   // أفتح المتصفح
   const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
 
+  // تعيين وكيل المستخدم العشوائي
+  await page.setUserAgent(userAgent);
+
   // اذهب الى رابط الفيديو على اليوتيوب
-  await page.goto('https://m.youtube.com/watch?v=u5j85Z7EMuM');
-  console.log('go');
+  await page.goto(url);
+  console.log(`go with user-agent: ${userAgent}`);
   
   // انتظر تحميل الصفحة بالكامل
   await page.waitForSelector('button[aria-label="Play"]');
