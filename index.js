@@ -9,17 +9,18 @@ const usedUserAgents = new Set(); // مجموعة لتخزين user agents ال�
 
 console.log(`watching: ${URL}`);
 
-// دالة لتوليد user agent فريد مع تأخير عشوائي
+// دالة لتوليد user agent فريد مع معرف فريد
 async function generateUniqueUserAgent() {
   let userAgent;
   do {
-    // تأخير عشوائي بين 0 إلى 1000 ميلي ثانية
-    await new Promise(resolve => setTimeout(resolve, Math.floor(Math.random() * 1000)));
     userAgent = new UserAgent({ deviceCategory: 'desktop' }).toString();
+    // إضافة معرف فريد إلى user agent
+    userAgent += ` ID/${Date.now()}${Math.random().toString().slice(2)}`;
   } while (usedUserAgents.has(userAgent)); // التحقق من التكرار
   usedUserAgents.add(userAgent); // إضافة إلى المجموعة
   return userAgent;
 }
+
 
 
 async function openBrowsers() {
