@@ -20,9 +20,9 @@ const userAgent = new UserAgent();
        console.log('no clicked');
      }
       await page.waitForTimeout(timewatch);
-      
+      if (browser) {
         await browser.close();
-    
+      }
       
     } catch (error) {
       console.error('error b:', error);
