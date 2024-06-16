@@ -10,11 +10,12 @@ async function openBrowserAndPlayVideo() {
   const browser = await firefox.launch({ headless: true });
   const page = await browser.newPage();
   await page.goto('https://m.youtube.com/watch?v=u5j85Z7EMuM');
-  
+  console.log('go');
   // Click the play button if it exists
   const playButton = await page.$('button[aria-label="Play"]');
   if (playButton) {
     await playButton.click();
+    console.log('clicked');
   }
   
   // Close the browser after a minute
