@@ -14,8 +14,8 @@ async function generateUniqueUserAgent() {
   let userAgent;
   do {
     userAgent = new UserAgent({ deviceCategory: 'desktop' }).toString();
-    // إضافة معرف فريد إلى user agent
-    userAgent += ` ID/${Date.now()}${Math.random().toString().slice(2)}`;
+    // إضافة معرف فريد إلى user agent باستخدام الوقت ورقم التكرار
+    userAgent += ` ID/${Date.now()}${Math.random().toString().slice(2)}-${process.pid}-${i}`;
   } while (usedUserAgents.has(userAgent)); // التحقق من التكرار
   usedUserAgents.add(userAgent); // إضافة إلى المجموعة
   return userAgent;
