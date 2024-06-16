@@ -6,8 +6,7 @@ const URL = 'https://m.youtube.com/watch?v=u5j85Z7EMuM';
 const BROWSER_COUNT = 5; // عدد المتصفحات التي نريد تشغيلها
 const BROWSER_TIMEOUT = 30000; // وقت الإغلاق بالمللي ثانية (30 ثانية)
 
-// دالة لفتح متصفح فايرفوكس مع user-agent فريد
-const openBrowser = async (index) => {
+const openBrowser = async () => {
   const userAgent = new UserAgent({ deviceCategory: 'desktop' });
 
   const browser = await firefox.launch({ headless: true });
@@ -21,29 +20,28 @@ const openBrowser = async (index) => {
   await page.goto(URL);
 
   const ua = await page.evaluate(() => navigator.userAgent);
-  console.log(`Browser ${index + 1} User-Agent used: ${ua}`);
+  console.log(`User-Agent used: ${ua}`);
 
   // محاولة الضغط على زر "Play"
   const playButton = await page.$('button[aria-label="Play"]'); // يمكنك تعديل الـselector حسب الحاجة
   if (playButton) {
     await playButton.click();
-    console.log(`Browser ${index + 1}: Play button clicked`);
+    console.log('Play button clicked');
   } else {
-    console.log(`Browser ${index + 1}: Play button not found`);
+    console.log('Play button not found');
   }
 
   // اغلاق المتصفح بعد وقت محدد
   setTimeout(async () => {
     await browser.close();
-    console.log(`Browser ${index + 1} closed and will reopen`);
+    console.log('Browser closed and will reopen');
   }, BROWSER_TIMEOUT);
 };
 
-// دالة رئيسية لتشغيل المتصفحات
 const main = async () => {
   while (true) { // حلقة لا نهائية لإعادة فتح المتصفحات عند الإغلاق
     console.log('Watch again');
-    const browserPromises = Array.from({ length: BROWSER_COUNT }).map((_, index) => openBrowser(index));
+    const browserPromises = Array.from({ length: BROWSER_COUNT }).map(openBrowser);
 
     await Promise.all(browserPromises);
 
