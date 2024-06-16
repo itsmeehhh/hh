@@ -40,7 +40,6 @@ const runBrowser = async () => {
 
   // اذهب الى رابط الفيديو على اليوتيوب
   await page.goto('https://m.youtube.com/watch?v=u5j85Z7EMuM');
-  console.log(`go with user-agent: ${userAgent}`);
   try {
   // انتظر تحميل الصفحة بالكامل
   await page.waitForSelector('button[aria-label="Play"]');
