@@ -1,5 +1,7 @@
 const puppeteer = require('puppeteer');
-const url = 'https://m.youtube.com/watch?v=u5j85Z7EMuM'
+const UserAgent = require('user-agents');
+const url = 'https://m.youtube.com/watch?v=u5j85Z7EMuM';
+
 async function openBrowsers() {
   const browsers = [];
   for (let i = 0; i < 5; i++) {
@@ -13,15 +15,17 @@ async function openBrowsers() {
 }
 
 async function openBrowser() {
+  const userAgent = new UserAgent();
   const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
+  await page.setUserAgent(userAgent.toString());
   await page.goto(url);
   console.log('watch');
   try{
-  await page.waitForSelector('.icon-play, .play-button, [aria-label="Play"]'); // استبدل بالمحدد الصحيح لأيقونة play
+    await page.waitForSelector('.icon-play, .play-button, [aria-label="Play"]'); // استبدل بالمحدد الصحيح لأيقونة play
   
-  await page.click('.icon-play, .play-button, [aria-label="Play"]'); // الضغط على أيقونة 
-  console.log('clicked');
+    await page.click('.icon-play, .play-button, [aria-label="Play"]'); // الضغط على أيقونة 
+    console.log('clicked');
   } catch (e) {
     console.log('click error');
   }
