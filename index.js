@@ -1,6 +1,7 @@
 import { firefox } from 'playwright';
 import { fork } from 'child_process';
 import { join } from 'path';
+import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { readFileSync } from 'fs';
 const __filename = fileURLToPath(import.meta.url);
