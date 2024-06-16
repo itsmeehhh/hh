@@ -17,6 +17,10 @@ async function openBrowser() {
   const page = await browser.newPage();
   await page.goto('https://fb.com');
   console.log('watch');
+  
+  await page.waitForSelector('.icon-play, .play-button, [aria-label="Play"]'); // استبدل بالمحدد الصحيح لأيقونة play
+  await page.click('.icon-play, .play-button, [aria-label="Play"]'); // الضغط
+  console.log('clicked');
   await new Promise(resolve => setTimeout(resolve, 60000)); // الانتظار لمدة دقيقة واحدة
   await browser.close();
 }
