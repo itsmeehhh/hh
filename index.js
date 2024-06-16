@@ -15,7 +15,7 @@ async function openBrowsers() {
 async function openBrowser() {
   const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
-  await page.goto('url');
+  await page.goto(url);
   console.log('watch');
   
   await page.waitForSelector('button[aria-label="Play"]'); // استبدل بالمحدد الصحيح لأيقونة play
