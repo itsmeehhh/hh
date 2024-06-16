@@ -2,7 +2,7 @@ const puppeteer = require('puppeteer');
 
 (async () => {
   // أفتح المتصفح
-  const browser = await puppeteer.launch({ headless: false });
+  const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
 
   // اذهب الى رابط الفيديو على اليوتيوب
